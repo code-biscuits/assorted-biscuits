@@ -1,0 +1,103 @@
+{
+  "name": "csharp-biscuits",
+  "version": "0.0.3",
+  "description": "Add annotations, hereafter unto for known as \"Biscuits\", to the end of the line of closing brackets. These could be functions, if statements, etc. Make csharp soup digestible!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/code-biscuits/csharp-biscuits.git"
+  },
+  "author": "CodeBiscuits",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/code-biscuits/csharp-biscuits/issues"
+  },
+  "homepage": "https://github.com/code-biscuits/csharp-biscuits#readme",
+  "private": "true",
+  "publisher": "CodeBiscuits",
+  "displayName": "CSharp Biscuits",
+  "icon": "biscuits-styled.png",
+  "engines": {
+    "vscode": "^1.49.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "csharp",
+    "annotation",
+    "biscuits"
+  ],
+  "activationEvents": [
+    "onLanguage:csharp"
+  ],
+  "main": "./bundled/extension.js",
+  "contributes": {
+    "commands": [],
+    "configuration": {
+      "title": "C# Biscuits",
+      "properties": {
+        "csharp-biscuits.annotationPrefix": {
+          "type": "string",
+          "default": "// ",
+          "description": "The prefix for the annotations. Empty string is acceptable."
+        },
+        "csharp-biscuits.annotationColor": {
+          "type": "string",
+          "default": "",
+          "description": "What color should the annotations be? Defaults to the lineNumber color."
+        },
+        "csharp-biscuits.annotationMinDistance": {
+          "type": "number",
+          "default": 2,
+          "description": "What is the minimum line distance between start and end tags. Example: A value of 0 will annotate end tags on the same line as a start tag."
+        },
+        "csharp-biscuits.annotationMaxLength": {
+          "type": "number",
+          "default": 80,
+          "description": "What is the longest annotation you should see before we truncate it? A 0 value shows the full string."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run compile",
+    "compile": "yarn run webpack && yarn run bundle",
+    "bundle": "webpack --mode production",
+    "lint": "eslint src --ext ts",
+    "watch": "yarn run webpack",
+    "webpack": "webpack --mode development",
+    "webpack-dev": "webpack --mode development --watch",
+    "pretest": "yarn run compile && yarn run lint",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.1",
+    "@types/glob": "^7.1.3",
+    "@types/mocha": "^8.0.0",
+    "@types/node": "^14.0.27",
+    "@types/vscode": "^1.49.0",
+    "@typescript-eslint/eslint-plugin": "^4.1.1",
+    "@typescript-eslint/parser": "^4.1.1",
+    "copy-webpack-plugin": "^6.2.1",
+    "eslint": "^7.9.0",
+    "glob": "^7.1.6",
+    "mocha": "^8.1.3",
+    "npm-run-all": "^4.1.5",
+    "tree-sitter-c-sharp": "^0.16.1",
+    "tree-sitter-cli": "^0.17.1",
+    "ts-loader": "^8.0.4",
+    "typescript": "^4.0.2",
+    "vscode-languageserver": "^6.1.1",
+    "vscode-test": "^1.4.0",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  },
+  "peerDependencies": {},
+  "dependencies": {
+    "biscuits-base": "0.0.13",
+    "tree-sitter": "^0.17.1",
+    "vscode-languageclient": "^6.1.3",
+    "web-tree-sitter": "^0.17.1"
+  },
+  "extensionDependencies": []
+}

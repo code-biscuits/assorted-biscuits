@@ -1,0 +1,38 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+  "files.exclude": {
+    "out": false // set this to true to hide the "out" folder with the compiled JS files
+  },
+  "search.exclude": {
+    "out": true // set this to false to include "out" folder in search results
+  },
+  // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
+  "typescript.tsc.autoDetect": "off",
+  "powermode.enabled": true,
+  "powermode.explosionDuration": 3000,
+  "powermode.maxExplosions": 40,
+  "powermode.comboTimeout": 4,
+  "powermode.explosionFrequency": 1,
+  "powermode.explosionSize": 42,
+  "powermode.explosionOrder": "sequential",
+  "powermode.customCss": {
+    "opacity": "1",
+    "transition": "all 500ms"
+  },
+  "powermode.customExplosions": [
+    "https://i.imgur.com/BfxzAts.png",
+    "https://i.imgur.com/dVQjcqc.png",
+    "https://i.imgur.com/sUMSgII.png",
+    "https://i.imgur.com/V81tYq1.png",
+    "https://i.imgur.com/C6ey7KC.png",
+    "https://i.imgur.com/4SabKqW.png",
+    "https://i.imgur.com/Lqs0JcF.png",
+    "https://i.imgur.com/taSGO7d.png",
+    "https://i.imgur.com/n8Z5a3w.png",
+    "https://i.imgur.com/ajxqJFZ.png",
+    "https://i.imgur.com/2t7TL4q.png",
+    "https://i.imgur.com/taSGO7d.png",
+    "https://i.imgur.com/FOKwl6H.png",
+    "https://i.imgur.com/falaNVU.png",
+  ]
+}
