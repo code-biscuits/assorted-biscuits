@@ -46,7 +46,6 @@ const config = {
         path.resolve(__dirname, "parsers/tree-sitter-bash.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-c.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-csharp.wasm"),
-        path.resolve(__dirname, "parsers/tree-sitter-cli.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-cpp.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-css.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-elm.wasm"),
