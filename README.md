@@ -1,12 +1,37 @@
-# csharp-biscuits README
+# Assorted Biscuits
 
-Use csharp-biscuits to make css soup and spaghetti more digestible. Annotate ALL the end brackets!!!
+Use assorted-biscuits to make css soup and spaghetti more digestible. Annotate ALL the end brackets!!!
 
 Watch the text by the end brackets to see Biscuits in action.
 
 ![](./example.gif)
 
 Note: The explosion you see is [Power Mode](https://marketplace.visualstudio.com/items?itemName=hoovercj.vscode-power-mode)
+
+## Supported Languages
+
+Assorted Biscuits is named as such because it handles multiple languages. This functionality is provided by Tree Sitter.
+
+- C
+- C#
+- Elm
+- Go
+- Java
+- JSON
+- Kotlin
+- Lua
+- PHP
+- Python
+- Rust
+- TOML
+- YAML
+
+We can add more as their grammars are made available via WASM.
+
+## Roadmap
+
+Until we can bring HTML, SCSS, and TS into this repo, we will continue to maintain those other extensions seperately.
+
 
 ## Warning! Potential Plugin Conflict
 
@@ -17,30 +42,22 @@ The HTML extension getting fixed will be the blueprint for fixing other extensio
 
 ## Configuration
 
-- `csharp-biscuits.annotationColor` _string_ : Determines the color of annotation. Accepts any valid CSS color string.
+- `assorted-biscuits.annotationColor` _string_ : Determines the color of annotation. Accepts any valid CSS color string.
 
   - default: vscode.ThemeColor("editorLineNumber.foreground"),
 
-- `csharp-biscuits.annotationPrefix` _string_ : Determines beginning of the annotation text. Empty string is acceptable.
+- `assorted-biscuits.annotationPrefix` _string_ : Determines beginning of the annotation text. Empty string is acceptable.
 
   - default: `"// "`,
 
-- `csharp-biscuits.annotationMinDistance` _number_ : Determines the minimum amount of lines between start and end tag used to decide to show the annotations.
+- `assorted-biscuits.annotationMinDistance` _number_ : Determines the minimum amount of lines between start and end tag used to decide to show the annotations.
 
   - default: `0`,
 
-- `csharp-biscuits.annotationMaxLength` _number_ : What is the longest annotation you should see before we cut it off ewith a `...`? A 0 value shows the full string.
+- `assorted-biscuits.annotationMaxLength` _number_ : What is the longest annotation you should see before we cut it off ewith a `...`? A 0 value shows the full string.
   - default: `80`,
 
 ## Release Notes
-
-### 0.0.3
-
-Fix annotations in nested children
-
-### 0.0.2
-
-Fix wasm dependency pathing
 
 ### 0.0.1
 

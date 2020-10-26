@@ -8,18 +8,60 @@ const treeSitter = TreeSitter.init().then(() => {
   return new TreeSitter();
 });
 
+const languages = [
+  // "agda", // does it even make sense here
+  // "bash", // failed
+  "csharp",
+  "c",
+  // "cpp", //failed
+  "css",
+  "elm",
+  // "embedded_template", //failed
+  "go",
+  // "html", //failed
+  "java",
+  // "javascript", // ignored until we have typescript here
+  "json",
+  "lua",
+  "kotlin",
+  // "markdown", //failed
+  "php",
+  "python",
+  // "ruby", //failed
+  "rust",
+  // "systemrdl", //failed
+  "toml",
+  // "vue", //failed
+  "yaml",
+];
+
+const TreeSitterLanguages: any = {};
+
 const extras = treeSitter.then(async (innerTreeSitter: any) => {
-  const Lang =await TreeSitter.Language.load(
-    "tree-sitter-c_sharp.wasm"
+  return Promise.all(
+    languages.map((language) => {
+      const grammarName = `tree-sitter-${language}`;
+      const grammarWasm = `${grammarName}.wasm`;
+
+      return TreeSitter.Language.load(grammarWasm).then(
+        (treeSitterLanguage: any) => {
+          TreeSitterLanguages[language] = treeSitterLanguage;
+
+          // innerTreeSitter.setLanguage(treeSitterLanguage);
+        }
+      );
+    })
   );
-  innerTreeSitter.setLanguage(Lang);
 });
 
 // Needs to be genericized
-const CONFIG_PREFIX_KEY = "csharp-biscuits.annotationPrefix";
-const CONFIG_COLOR_KEY = "csharp-biscuits.annotationColor";
-const CONFIG_DISTANCE_KEY = "csharp-biscuits.annotationMinDistance";
-const CONFIG_MAX_LENGTH = "csharp-biscuits.annotationMaxLength";
+const CONFIG_PREFIX_KEY = "code-biscuits.annotationPrefix";
+const CONFIG_COLOR_KEY = "code-biscuits.annotationColor";
+const CONFIG_DISTANCE_KEY = "code-biscuits.annotationMinDistance";
+const CONFIG_MAX_LENGTH = "code-biscuits.annotationMaxLength";
+const CONFIG_LANGUAGE_SETTINGS = "code-biscuits.languageSettings";
+
+let runningActivation: Promise<any>;
 
 export const activate = createActivate(
   CONFIG_COLOR_KEY,
@@ -32,69 +74,92 @@ export const activate = createActivate(
       prefix: string,
       minDistance: number
     ) {
+      try {
       const innerTreeSitter = await treeSitter;
       await extras;
-      const parsedText = (innerTreeSitter as TreeSitter).parse(text);
 
-      console.log("Original text", text);
-      console.log("Parsed Text", parsedText);
-      console.log('Root',
-      parsedText.rootNode.children.map((node: TreeSitter.SyntaxNode) => {
-        return node.endPosition
-      })
+      return _createDecorations(
+        text,
+        activeEditor,
+        minDistance,
+        prefix,
+        innerTreeSitter
       );
 
-
-
-      const decorations: any[] = [];
-      let nodes = parsedText.rootNode.children;
-      let children: any[] = [];
-      while(nodes.length > 0) {
-        nodes.forEach((node: TreeSitter.SyntaxNode) => {
-
-          if(node.children.length > 0) {
-            children = [...children, ...node.children];
-          }
-
-          const startLine = node.startPosition.row;
-          const endLine = node.endPosition.row;
-
-          let contentText = "";
-
-          const text = node.text.trim();
-          if(text.charAt(0) !== '{' && text.charAt(0) !== '(') {
-            contentText = text;
-          }
-
-          let maxLength: number =
-            vscode.workspace.getConfiguration().get(CONFIG_MAX_LENGTH) || 0;
-
-          if (maxLength && contentText.length > maxLength) {
-            contentText = contentText.substr(0, maxLength) + "...";
-          }
-
-          const endOfLine = activeEditor.document.lineAt(endLine).range.end;
-
-          if (endLine - startLine >= minDistance && contentText) {
-            decorations.push({
-              range: new vscode.Range(
-                activeEditor.document.positionAt(endLine),
-                endOfLine
-              ),
-              renderOptions: {
-                after: {
-                  contentText: `${prefix} ${contentText}`,
-                },
-              },
-            });
-          }
-
-        });
-        nodes = children;
-        children = []
-      }
-
-      return decorations;
+    } catch (error) {
+      console.log('error', error);
+      return [];
+    }
     },
   }
 );
+
+function _createDecorations(
+  text: string,
+  activeEditor: vscode.TextEditor,
+  minDistance: number,
+  prefix: string,
+  innerTreeSitter: any,
+) {
+  const alreadyListedLines: any = {}
+  const editorLanguage = activeEditor.document.languageId;
+
+  if (!TreeSitterLanguages[editorLanguage]) {
+    return [];
+  }
+  innerTreeSitter.setLanguage(TreeSitterLanguages[editorLanguage]);
+  const parsedText = (innerTreeSitter as TreeSitter).parse(text);
+
+  const decorations: any[] = [];
+  let nodes = parsedText.rootNode.children;
+  let children: any[] = [];
+  while (nodes.length > 0) {
+    nodes.forEach((node: TreeSitter.SyntaxNode, index: number) => {
+      if (node.children.length > 0) {
+        children = [...children, ...node.children];
+      }
+
+
+      let startLine = node.startPosition.row;
+      const endLine = node.endPosition.row;
+
+      let contentText = "";
+
+      const text = node.text.trim();
+      contentText = text.replace(/(\r|\n|\r\n)/gm, "");
+
+      if(node?.previousSibling?.type === "member_access_expression") {
+        contentText = node.previousSibling.lastChild.text.replace(/(\r|\n|\r\n)/gm, "");
+      }
+
+      let maxLength: number =
+        vscode.workspace.getConfiguration().get(CONFIG_MAX_LENGTH) || 0;
+
+      if (maxLength && contentText.length > maxLength) {
+        contentText = contentText.substr(0, maxLength) + "...";
+      }
+
+      const endOfLine = activeEditor.document.lineAt(endLine).range.end;
+
+      if (endLine && endLine - startLine >= minDistance && contentText && startLine != endLine && !alreadyListedLines[startLine]) {
+          alreadyListedLines[startLine] = true;
+          decorations.push({
+            range: new vscode.Range(
+              activeEditor.document.positionAt(endLine),
+              endOfLine
+            ),
+            renderOptions: {
+              after: {
+                contentText: `${prefix} ${contentText}`,
+              },
+            },
+          });
+
+      }
+    });
+    nodes = children;
+    children = [];
+  }
+
+  return decorations;
+}

@@ -12,3 +12,4 @@ out
 *.afdesign
 samples
 ._*
+./parsers/*.wasm
