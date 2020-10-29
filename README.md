@@ -32,6 +32,10 @@ We can add more as their grammars are made available via WASM.
 
 Until we can bring HTML, SCSS, and TS into this repo, we will continue to maintain those other extensions seperately.
 
+## Warning! Macros cause poor AST parsing
+
+Currently investigating problems with Macros in various languages.
+
 
 ## Warning! Potential Plugin Conflict
 
@@ -58,6 +62,10 @@ The HTML extension getting fixed will be the blueprint for fixing other extensio
   - default: `80`,
 
 ## Release Notes
+
+### 0.0.2
+
+Use proper config keys to allow configuration to take effect
 
 ### 0.0.1
 

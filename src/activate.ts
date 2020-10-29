@@ -55,11 +55,11 @@ const extras = treeSitter.then(async (innerTreeSitter: any) => {
 });
 
 // Needs to be genericized
-const CONFIG_PREFIX_KEY = "code-biscuits.annotationPrefix";
-const CONFIG_COLOR_KEY = "code-biscuits.annotationColor";
-const CONFIG_DISTANCE_KEY = "code-biscuits.annotationMinDistance";
-const CONFIG_MAX_LENGTH = "code-biscuits.annotationMaxLength";
-const CONFIG_LANGUAGE_SETTINGS = "code-biscuits.languageSettings";
+const CONFIG_PREFIX_KEY = "assorted-biscuits.annotationPrefix";
+const CONFIG_COLOR_KEY = "assorted-biscuits.annotationColor";
+const CONFIG_DISTANCE_KEY = "assorted-biscuits.annotationMinDistance";
+const CONFIG_MAX_LENGTH = "assorted-biscuits.annotationMaxLength";
+const CONFIG_LANGUAGE_SETTINGS = "assorted-biscuits.languageSettings";
 
 let runningActivation: Promise<any>;
 
@@ -101,7 +101,6 @@ function _createDecorations(
   prefix: string,
   innerTreeSitter: any,
 ) {
-  const alreadyListedLines: any = {}
   const editorLanguage = activeEditor.document.languageId;
 
   if (!TreeSitterLanguages[editorLanguage]) {
@@ -112,8 +111,10 @@ function _createDecorations(
 
   const decorations: any[] = [];
   let nodes = parsedText.rootNode.children;
+  console.log('nodes', parsedText.rootNode.children.map((child: any) => JSON.stringify(child, undefined, 2)));
   let children: any[] = [];
   while (nodes.length > 0) {
+
     nodes.forEach((node: TreeSitter.SyntaxNode, index: number) => {
       if (node.children.length > 0) {
         children = [...children, ...node.children];
@@ -141,8 +142,7 @@ function _createDecorations(
 
       const endOfLine = activeEditor.document.lineAt(endLine).range.end;
 
-      if (endLine && endLine - startLine >= minDistance && contentText && startLine != endLine && !alreadyListedLines[startLine]) {
-          alreadyListedLines[startLine] = true;
+      if (endLine && endLine - startLine >= minDistance && contentText && startLine != endLine) {
           decorations.push({
             range: new vscode.Range(
               activeEditor.document.positionAt(endLine),
