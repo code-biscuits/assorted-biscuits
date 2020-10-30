@@ -1,6 +1,6 @@
 # Assorted Biscuits
 
-Use assorted-biscuits to make css soup and spaghetti more digestible. Annotate ALL the end brackets!!!
+Use assorted-biscuits to make code soup and spaghetti more digestible. Annotate ALL the end brackets!!!
 
 Watch the text by the end brackets to see Biscuits in action.
 
@@ -10,7 +10,7 @@ Note: The explosion you see is [Power Mode](https://marketplace.visualstudio.com
 
 ## Supported Languages
 
-Assorted Biscuits is named as such because it handles multiple languages. This functionality is provided by Tree Sitter.
+Assorted Biscuits is named as such because it handles multiple languages. This functionality is provided by [Tree Sitter](https://github.com/tree-sitter/tree-sitter).
 
 - C
 - C#
@@ -26,16 +26,11 @@ Assorted Biscuits is named as such because it handles multiple languages. This f
 - TOML
 - YAML
 
-We can add more as their grammars are made available via WASM.
+We can add more as their grammars are made available as WebAssembly.
 
 ## Roadmap
 
 Until we can bring HTML, SCSS, and TS into this repo, we will continue to maintain those other extensions seperately.
-
-## Warning! Macros cause poor AST parsing
-
-Currently investigating problems with Macros in various languages.
-
 
 ## Warning! Potential Plugin Conflict
 
@@ -48,7 +43,7 @@ The HTML extension getting fixed will be the blueprint for fixing other extensio
 
 - `assorted-biscuits.annotationColor` _string_ : Determines the color of annotation. Accepts any valid CSS color string.
 
-  - default: vscode.ThemeColor("editorLineNumber.foreground"),
+  - default: `vscode.ThemeColor("editorLineNumber.foreground")`,
 
 - `assorted-biscuits.annotationPrefix` _string_ : Determines beginning of the annotation text. Empty string is acceptable.
 
@@ -58,10 +53,16 @@ The HTML extension getting fixed will be the blueprint for fixing other extensio
 
   - default: `0`,
 
-- `assorted-biscuits.annotationMaxLength` _number_ : What is the longest annotation you should see before we cut it off ewith a `...`? A 0 value shows the full string.
-  - default: `80`,
+- `assorted-biscuits.annotationMaxLength` _number_ : What is the longest annotation you should see before we cut it off with a `...`? A `0` value shows the full string.
+  - default: `42`,
 
 ## Release Notes
+
+### 0.0.4
+
+- Stop annotation starting blocks for chained functions
+- Add more detailed chained function annotation text
+- Stopped showing empty annotations
 
 ### 0.0.3
 

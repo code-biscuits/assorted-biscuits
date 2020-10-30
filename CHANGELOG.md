@@ -4,6 +4,12 @@ All notable changes to the "csharp-biscuits" extension will be documented in thi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.0.4
+
+- Stop annotation starting blocks for chained functions
+- Add more detailed chained function annotation text
+- Stopped showing empty annotations
+
 ### 0.0.3
 
 - Handle chained access better

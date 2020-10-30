@@ -130,18 +130,22 @@ function _createDecorations(
 
       let contentText = "";
 
-      // const text = activeEditor.document.getText(
-      //   new Range(
-      //     new Position(node.startPosition.row, node.startPosition.column),
-      //     new Position(node.endPosition.row, node.endPosition.column)
-      //   )
-      // );
-
       contentText = node.text.replace(/(\r|\n|\r\n|\s)+/gm, " ");
 
       if(node?.previousSibling?.type === "member_access_expression") {
-        contentText = node.previousSibling.lastChild.text.replace(/(\r|\n|\r\n|\s)+/gm, " ");
-        // contentText = activeEditor.document.lineAt(node.startPosition.row).text.trim();
+        // contentText = node.previousSibling.lastChild.text.replace(/(\r|\n|\r\n|\s)+/gm, " ");
+        contentText = activeEditor.document.lineAt(node.startPosition.row).text.trim();
+
+        // contentText = activeEditor.document.getText(
+        //   new Range(
+        //     new Position(node.startPosition.row, node.startPosition.column),
+        //     new Position(node.endPosition.row, node.endPosition.column)
+        //   )
+        // );
+      }
+
+      if(node?.nextSibling?.type === 'argument_list') {
+        contentText = '';
       }
 
       let maxLength: number =
@@ -152,6 +156,8 @@ function _createDecorations(
       }
 
       const endOfLine = activeEditor.document.lineAt(endLine).range.end;
+
+      contentText = contentText.trim();
 
       if (endLine && endLine - startLine >= minDistance && contentText && startLine != endLine) {
 
