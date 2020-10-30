@@ -1,6 +1,6 @@
 {
   "name": "assorted-biscuits",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Add annotations, hereafter unto for known as \"Biscuits\", to the end of the line of closing brackets (and more). These could be functions, if statements, etc. Make code soup digestible!",
   "repository": {
     "type": "git",
@@ -78,6 +78,7 @@
     "@types/vscode": "^1.49.0",
     "@typescript-eslint/eslint-plugin": "^4.1.1",
     "@typescript-eslint/parser": "^4.1.1",
+    "@webassemblyjs/wasm-opt": "^1.9.1",
     "copy-webpack-plugin": "^6.2.1",
     "eslint": "^7.9.0",
     "glob": "^7.1.6",

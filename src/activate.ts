@@ -1,4 +1,4 @@
-import vscode, { Range, TextDocument as RawTextDocument } from "vscode";
+import vscode, { Position, Range, TextDocument as RawTextDocument } from "vscode";
 import { createActivate } from "biscuits-base";
 
 // @ts-ignore
@@ -46,8 +46,6 @@ const extras = treeSitter.then(async (innerTreeSitter: any) => {
       return TreeSitter.Language.load(grammarWasm).then(
         (treeSitterLanguage: any) => {
           TreeSitterLanguages[language] = treeSitterLanguage;
-
-          // innerTreeSitter.setLanguage(treeSitterLanguage);
         }
       );
     })
@@ -106,31 +104,44 @@ function _createDecorations(
   if (!TreeSitterLanguages[editorLanguage]) {
     return [];
   }
-  innerTreeSitter.setLanguage(TreeSitterLanguages[editorLanguage]);
-  const parsedText = (innerTreeSitter as TreeSitter).parse(text);
 
-  const decorations: any[] = [];
+  const macroStartRegex = /^\w*\#\[/gm;
+  const scrubbedText = text.replace(macroStartRegex, '//');
+
+  innerTreeSitter.setLanguage(TreeSitterLanguages[editorLanguage]);
+  const parsedText = (innerTreeSitter as TreeSitter).parse(scrubbedText);
+
+  let decorations: any[] = [];
+
+  const biscuitsByFreshness: any = {};
+
   let nodes = parsedText.rootNode.children;
   console.log('nodes', parsedText.rootNode.children.map((child: any) => JSON.stringify(child, undefined, 2)));
   let children: any[] = [];
   while (nodes.length > 0) {
 
-    nodes.forEach((node: TreeSitter.SyntaxNode, index: number) => {
+    nodes.forEach((node: TreeSitter.SyntaxNode) => {
       if (node.children.length > 0) {
         children = [...children, ...node.children];
       }
-
 
       let startLine = node.startPosition.row;
       const endLine = node.endPosition.row;
 
       let contentText = "";
 
-      const text = node.text.trim();
-      contentText = text.replace(/(\r|\n|\r\n)/gm, "");
+      // const text = activeEditor.document.getText(
+      //   new Range(
+      //     new Position(node.startPosition.row, node.startPosition.column),
+      //     new Position(node.endPosition.row, node.endPosition.column)
+      //   )
+      // );
+
+      contentText = node.text.replace(/(\r|\n|\r\n|\s)+/gm, " ");
 
       if(node?.previousSibling?.type === "member_access_expression") {
-        contentText = node.previousSibling.lastChild.text.replace(/(\r|\n|\r\n)/gm, "");
+        contentText = node.previousSibling.lastChild.text.replace(/(\r|\n|\r\n|\s)+/gm, " ");
+        // contentText = activeEditor.document.lineAt(node.startPosition.row).text.trim();
       }
 
       let maxLength: number =
@@ -143,9 +154,23 @@ function _createDecorations(
       const endOfLine = activeEditor.document.lineAt(endLine).range.end;
 
       if (endLine && endLine - startLine >= minDistance && contentText && startLine != endLine) {
+
+        if(node?.previousSibling?.type === "member_access_expression") {
+          biscuitsByFreshness[endLine] = {
+            range: new vscode.Range(
+              activeEditor.document.positionAt(node.startIndex),
+              endOfLine
+            ),
+            renderOptions: {
+              after: {
+                contentText: `${prefix} ${contentText}`,
+              },
+            },
+          };
+        } else {
           decorations.push({
             range: new vscode.Range(
-              activeEditor.document.positionAt(endLine),
+              activeEditor.document.positionAt(node.startIndex),
               endOfLine
             ),
             renderOptions: {
@@ -154,12 +179,17 @@ function _createDecorations(
               },
             },
           });
-
+        }
       }
     });
     nodes = children;
     children = [];
   }
+
+  decorations = [
+    ...Object.values(biscuitsByFreshness),
+    ...decorations
+  ];
 
   return decorations;
 }
