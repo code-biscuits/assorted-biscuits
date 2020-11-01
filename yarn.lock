@@ -701,10 +701,10 @@ bindings@^1.5.0:
   dependencies:
     file-uri-to-path "1.0.0"
 
-biscuits-base@0.0.13:
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/biscuits-base/-/biscuits-base-0.0.13.tgz#b0e0d78dd199d8f4bdf0fcb9e798222046a8361f"
-  integrity sha512-t84UsIMnixVAtFznkltPocZ6NFYZ16O3F6H6tfaFkMP6WpR0vNcrct1hjYfwsl6I73BxqOR6/5jnU56KNRmf/w==
+biscuits-base@0.0.14:
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/biscuits-base/-/biscuits-base-0.0.14.tgz#5cc58a054c98d611cc2f1ed8711f9a33fd4ef532"
+  integrity sha512-QU51xjrXAWyJDZA2VyUjeo4V8LOsDfj1XpUWEfN7mHCgrIUdDNkZ/LJOedNjsFkZD1SueLKklCvpANa3S4ec7g==
   dependencies:
     fs-extra "^9.0.1"
 

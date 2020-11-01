@@ -58,6 +58,11 @@ The HTML extension getting fixed will be the blueprint for fixing other extensio
 
 ## Release Notes
 
+### 0.0.5
+
+- Handle more edge cases around chained methods
+- Fix ending annotations showing wrong result when start line edited
+
 ### 0.0.4
 
 - Stop annotation starting blocks for chained functions

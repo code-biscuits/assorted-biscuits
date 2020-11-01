@@ -4,6 +4,12 @@ All notable changes to the "csharp-biscuits" extension will be documented in thi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+
+### 0.0.5
+
+- Handle more edge cases around chained methods
+- Fix ending annotations showing wrong result when start line edited
+
 ### 0.0.4
 
 - Stop annotation starting blocks for chained functions

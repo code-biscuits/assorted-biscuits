@@ -14,11 +14,11 @@ const languages = [
   "csharp",
   "c",
   // "cpp", //failed
-  "css",
+  // "css",
   "elm",
   // "embedded_template", //failed
   "go",
-  // "html", //failed
+  // "html", //failed 
   "java",
   // "javascript", // ignored until we have typescript here
   "json",
@@ -114,9 +114,9 @@ function _createDecorations(
   let decorations: any[] = [];
 
   const biscuitsByFreshness: any = {};
+  const biscuitsByStaleness: any = {};
 
   let nodes = parsedText.rootNode.children;
-  console.log('nodes', parsedText.rootNode.children.map((child: any) => JSON.stringify(child, undefined, 2)));
   let children: any[] = [];
   while (nodes.length > 0) {
 
@@ -130,18 +130,15 @@ function _createDecorations(
 
       let contentText = "";
 
-      contentText = node.text.replace(/(\r|\n|\r\n|\s)+/gm, " ");
+      contentText = activeEditor.document.lineAt(node.startPosition.row).text.trim();
 
-      if(node?.previousSibling?.type === "member_access_expression") {
-        // contentText = node.previousSibling.lastChild.text.replace(/(\r|\n|\r\n|\s)+/gm, " ");
-        contentText = activeEditor.document.lineAt(node.startPosition.row).text.trim();
+      if(contentText.charAt(0) === '{') {
+        contentText = node.text.replace(/(\r|\n|\r\n|\s)+/gm, " ");
+      }
 
-        // contentText = activeEditor.document.getText(
-        //   new Range(
-        //     new Position(node.startPosition.row, node.startPosition.column),
-        //     new Position(node.endPosition.row, node.endPosition.column)
-        //   )
-        // );
+      if(
+        node?.nextSibling?.type === ".") {
+        contentText = '';
       }
 
       if(node?.nextSibling?.type === 'argument_list') {
@@ -162,6 +159,7 @@ function _createDecorations(
       if (endLine && endLine - startLine >= minDistance && contentText && startLine != endLine) {
 
         if(node?.previousSibling?.type === "member_access_expression") {
+
           biscuitsByFreshness[endLine] = {
             range: new vscode.Range(
               activeEditor.document.positionAt(node.startIndex),
@@ -173,7 +171,10 @@ function _createDecorations(
               },
             },
           };
-        } else {
+        } else if(!biscuitsByStaleness[endLine]) {
+
+          biscuitsByStaleness[endLine] = true;
+
           decorations.push({
             range: new vscode.Range(
               activeEditor.document.positionAt(node.startIndex),
