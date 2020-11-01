@@ -4,7 +4,7 @@ Use assorted-biscuits to make code soup and spaghetti more digestible. Annotate 
 
 Watch the text by the end brackets to see Biscuits in action.
 
-![](./example.gif)
+![](example.gif)
 
 Note: The explosion you see is [Power Mode](https://marketplace.visualstudio.com/items?itemName=hoovercj.vscode-power-mode)
 
@@ -58,7 +58,7 @@ The HTML extension getting fixed will be the blueprint for fixing other extensio
 
 ## Release Notes
 
-### 0.0.7
+### 0.0.8
 
 - Allow example gif pathing to work
 
