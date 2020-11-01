@@ -1,11 +1,8 @@
 {
   "name": "assorted-biscuits",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Add annotations, hereafter unto for known as \"Biscuits\", to the end of the line of closing brackets (and more). These could be functions, if statements, etc. Make code soup digestible!",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/code-biscuits/assorted-biscuits.git"
-  },
+  "repository": "https://github.com/code-biscuits/assorted-biscuits",
   "author": "CodeBiscuits",
   "license": "MIT",
   "bugs": {
@@ -39,7 +36,7 @@
         "assorted-biscuits.annotationPrefix": {
           "type": "string",
           "default": "// ",
-          "description": "The prefix for the annotations. Emoji are allowed. Empty string is also acceptable."
+          "description": "The prefix for the annotations. Empty string is acceptable."
         },
         "assorted-biscuits.annotationColor": {
           "type": "string",
@@ -48,7 +45,7 @@
         },
         "assorted-biscuits.annotationMinDistance": {
           "type": "number",
-          "default": 3,
+          "default": 2,
           "description": "What is the minimum line distance between start and end tags. Example: A value of 0 will annotate end tags on the same line as a start tag."
         },
         "assorted-biscuits.annotationMaxLength": {
@@ -84,11 +81,8 @@
     "glob": "^7.1.6",
     "mocha": "^8.1.3",
     "npm-run-all": "^4.1.5",
-    "tree-sitter-c-sharp": "^0.16.1",
-    "tree-sitter-cli": "^0.17.1",
     "ts-loader": "^8.0.4",
     "typescript": "^4.0.2",
-    "vscode-languageserver": "^6.1.1",
     "vscode-test": "^1.4.0",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
@@ -96,8 +90,6 @@
   "peerDependencies": {},
   "dependencies": {
     "biscuits-base": "0.0.14",
-    "tree-sitter": "^0.17.1",
-    "vscode-languageclient": "^6.1.3",
     "web-tree-sitter": "^0.17.1"
   },
   "extensionDependencies": []
