@@ -45,7 +45,7 @@ The HTML extension getting fixed will be the blueprint for fixing other extensio
 
   - default: `vscode.ThemeColor("editorLineNumber.foreground")`,
 
-- `assorted-biscuits.annotationPrefix` _string_ : Determines beginning of the annotation text. Empty string is acceptable.
+- `assorted-biscuits.annotationPrefix` _string_ : Determines beginning of the annotation text. Emoji are allowed. Empty string is also acceptable.
 
   - default: `"// "`,
 
@@ -57,6 +57,10 @@ The HTML extension getting fixed will be the blueprint for fixing other extensio
   - default: `42`,
 
 ## Release Notes
+
+### 0.0.6
+
+- Update config descriptions and update example.gif
 
 ### 0.0.5
 

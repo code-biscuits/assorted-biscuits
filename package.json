@@ -1,6 +1,6 @@
 {
   "name": "assorted-biscuits",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Add annotations, hereafter unto for known as \"Biscuits\", to the end of the line of closing brackets (and more). These could be functions, if statements, etc. Make code soup digestible!",
   "repository": {
     "type": "git",
@@ -39,7 +39,7 @@
         "assorted-biscuits.annotationPrefix": {
           "type": "string",
           "default": "// ",
-          "description": "The prefix for the annotations. Empty string is acceptable."
+          "description": "The prefix for the annotations. Emoji are allowed. Empty string is also acceptable."
         },
         "assorted-biscuits.annotationColor": {
           "type": "string",
@@ -48,7 +48,7 @@
         },
         "assorted-biscuits.annotationMinDistance": {
           "type": "number",
-          "default": 2,
+          "default": 3,
           "description": "What is the minimum line distance between start and end tags. Example: A value of 0 will annotate end tags on the same line as a start tag."
         },
         "assorted-biscuits.annotationMaxLength": {
