@@ -688,10 +688,10 @@ bindings@^1.5.0:
   dependencies:
     file-uri-to-path "1.0.0"
 
-biscuits-base@0.0.14:
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/biscuits-base/-/biscuits-base-0.0.14.tgz#5cc58a054c98d611cc2f1ed8711f9a33fd4ef532"
-  integrity sha512-QU51xjrXAWyJDZA2VyUjeo4V8LOsDfj1XpUWEfN7mHCgrIUdDNkZ/LJOedNjsFkZD1SueLKklCvpANa3S4ec7g==
+biscuits-base@0.0.15:
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/biscuits-base/-/biscuits-base-0.0.15.tgz#e02dbfcaded9e55feda05e6ff44f7eb0bd936d1f"
+  integrity sha512-s/fTmYpcEqeuuGBlZ5RTqxaM0WimsmC5QyJ6Qfe6t2z0+gfNRUMwhUuyksQ5KcAz+FTnpBzoJP8VWIOlBh4ewQ==
   dependencies:
     fs-extra "^9.0.1"
 
@@ -4190,6 +4190,11 @@ validate-npm-package-license@^3.0.1:
   dependencies:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
+
+validate.js@^0.13.1:
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/validate.js/-/validate.js-0.13.1.tgz#b58bfac04a0f600a340f62e5227e70d95971e92a"
+  integrity sha512-PnFM3xiZ+kYmLyTiMgTYmU7ZHkjBZz2/+F0DaALc/uUtVzdCt1wAosvYJ5hFQi/hz8O4zb52FQhHZRC+uVkJ+g==
 
 vm-browserify@^1.0.1:
   version "1.1.2"

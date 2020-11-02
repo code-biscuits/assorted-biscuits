@@ -4,6 +4,10 @@ All notable changes to the "csharp-biscuits" extension will be documented in thi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.0.9
+
+Fix breaking bug in base
+
 ### 0.0.8
 
 - Allow example gif pathing to work

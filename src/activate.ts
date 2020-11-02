@@ -1,5 +1,6 @@
 import vscode, { Position, Range, TextDocument as RawTextDocument } from "vscode";
 import { createActivate } from "biscuits-base";
+import * as validator from "validate.js";
 
 // @ts-ignore
 import TreeSitter = require("../deps/tree-sitter");
@@ -34,6 +35,46 @@ const languages = [
   // "vue", //failed
   "yaml",
 ];
+
+const languageSettingsConstraints: any = {};
+
+languages.forEach((language: string) => {
+  languageSettingsConstraints[`${language}.annotationPrefix`] = {
+    type: "string"
+  };
+
+  languageSettingsConstraints[`${language}.annotationColor`] = {
+    type: "string"
+
+  };
+
+  languageSettingsConstraints[`${language}.annotationMinDistance`] = {
+    type: "number",
+    numericality: {
+      greaterThanOrEqualTo: 0,
+    }
+  };
+
+  languageSettingsConstraints[`${language}.annotationMaxLength`] = {
+    type: "number",
+    numericality: {
+      greaterThanOrEqualTo: 0,
+    }
+  };
+});
+
+const languageNameConstraints = {
+  key: {
+    type: "string",
+    inclusion: {
+      within: languages,
+      message: '^"%{value}" is not a supported language.'
+    }
+  }
+};
+
+let hasShownInvalidSettingsWarning = false;
+let previousSettingsString = "";
 
 const TreeSitterLanguages: any = {};
 
@@ -101,6 +142,47 @@ function _createDecorations(
 ) {
   const editorLanguage = activeEditor.document.languageId;
 
+  const currentSettings: any = vscode.workspace.getConfiguration().get(CONFIG_LANGUAGE_SETTINGS) || {};
+  const settingsAreInvalid = validator.validate(currentSettings, languageSettingsConstraints);
+  const currentSettingsString = JSON.stringify(currentSettings);
+
+  const namesAreInvalidResults = Object.keys(currentSettings).map(
+    (key: any) => {
+      return validator.validate({key}, languageNameConstraints);
+    }
+  );
+
+  const namesAreInvalid = namesAreInvalidResults.some(result => !!result);
+
+  // TODO: handle invalid keys within a valid language
+
+  if(
+    (settingsAreInvalid || namesAreInvalid) &&
+    !hasShownInvalidSettingsWarning &&
+    currentSettingsString !== previousSettingsString
+    ) {
+
+      let message = `Assorted Biscuits 🍪 Invalid Settings: `;
+
+      if(namesAreInvalid) {
+        message += namesAreInvalidResults.map(validation => validation.key).join(' • ');
+      }
+
+      if(namesAreInvalid && settingsAreInvalid) {
+        message += ' • ';
+      }
+
+      if(settingsAreInvalid) {
+        message += Object.values(settingsAreInvalid).join(' • ');
+      }
+
+      console.log("SETTINGS INVALID: ", JSON.stringify(settingsAreInvalid));
+
+      vscode.window.showWarningMessage(message);
+    }
+
+  previousSettingsString = currentSettingsString;
+
   if (!TreeSitterLanguages[editorLanguage]) {
     return [];
   }
@@ -147,6 +229,10 @@ function _createDecorations(
 
       let maxLength: number =
         vscode.workspace.getConfiguration().get(CONFIG_MAX_LENGTH) || 0;
+
+      // if(settingsAreInvalid[]) {
+
+      // }
 
       if (maxLength && contentText.length > maxLength) {
         contentText = contentText.substr(0, maxLength) + "...";

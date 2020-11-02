@@ -58,6 +58,10 @@ The HTML extension getting fixed will be the blueprint for fixing other extensio
 
 ## Release Notes
 
+### 0.0.9
+
+Fix breaking bug in base
+
 ### 0.0.8
 
 - Allow example gif pathing to work
