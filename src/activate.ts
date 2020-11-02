@@ -73,6 +73,25 @@ const languageNameConstraints = {
   }
 };
 
+const languageSettingsNamesConstraints: any = {};
+
+languages.forEach(language => {
+  languageSettingsNamesConstraints[language] = {
+    key: {
+      type: "string",
+      inclusion: {
+        within: [
+          `${language}.annotationPrefix`,
+          `${language}.annotationColor`,
+          `${language}.annotationMinDistance`,
+          `${language}.annotationMaxLength`,
+        ],
+        message: '^"%{value}" is not a supported property.'
+      }
+    }
+  }
+});
+
 let hasShownInvalidSettingsWarning = false;
 let previousSettingsString = "";
 
@@ -146,18 +165,30 @@ function _createDecorations(
   const settingsAreInvalid = validator.validate(currentSettings, languageSettingsConstraints);
   const currentSettingsString = JSON.stringify(currentSettings);
 
+  const settingsNamesResults: any[] = [];
+
   const namesAreInvalidResults = Object.keys(currentSettings).map(
     (key: any) => {
-      return validator.validate({key}, languageNameConstraints);
+      const keyIsInvalid = validator.validate({key}, languageNameConstraints);
+
+      if(!keyIsInvalid) {
+        Object.keys(currentSettings[key]).forEach(propKey => {
+          settingsNamesResults.push(validator.validate({
+            key: propKey
+          }, languageSettingsNamesConstraints[key]));
+        });
+      }
+
+      return keyIsInvalid;
     }
   );
 
   const namesAreInvalid = namesAreInvalidResults.some(result => !!result);
 
-  // TODO: handle invalid keys within a valid language
+  const settingsNamesAreInvalid = settingsNamesResults.some(result => !!result);
 
   if(
-    (settingsAreInvalid || namesAreInvalid) &&
+    (settingsAreInvalid || namesAreInvalid || settingsNamesAreInvalid) &&
     !hasShownInvalidSettingsWarning &&
     currentSettingsString !== previousSettingsString
     ) {
@@ -165,18 +196,30 @@ function _createDecorations(
       let message = `Assorted Biscuits 🍪 Invalid Settings: `;
 
       if(namesAreInvalid) {
-        message += namesAreInvalidResults.map(validation => validation.key).join(' • ');
+        message += namesAreInvalidResults
+          .filter(validation => !!validation)
+          .map(validation => validation.key)
+          .join(' • ');
+
+        if(settingsAreInvalid || settingsNamesAreInvalid) {
+          message += ' • ';
+        }
       }
 
-      if(namesAreInvalid && settingsAreInvalid) {
-        message += ' • ';
+      if(settingsNamesAreInvalid) {
+        message += settingsNamesResults
+          .filter(validation => !!validation)
+          .map(validation => validation.key)
+          .join(' • ');
+
+        if(settingsAreInvalid) {
+          message += ' • ';
+        }
       }
 
       if(settingsAreInvalid) {
         message += Object.values(settingsAreInvalid).join(' • ');
       }
-
-      console.log("SETTINGS INVALID: ", JSON.stringify(settingsAreInvalid));
 
       vscode.window.showWarningMessage(message);
     }

@@ -4,9 +4,13 @@ All notable changes to the "csharp-biscuits" extension will be documented in thi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.0.10
+
+- Finish validation for individual language settings
+
 ### 0.0.9
 
-Fix breaking bug in base
+- Fix breaking bug in base
 
 ### 0.0.8
 
@@ -35,8 +39,8 @@ Fix breaking bug in base
 
 ### 0.0.2
 
-Use proper config keys to allow configuration to take effect
+- Use proper config keys to allow configuration to take effect
 
 ### 0.0.1
 
-First tested public launch
+- First tested public launch
