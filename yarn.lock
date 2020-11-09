@@ -688,10 +688,10 @@ bindings@^1.5.0:
   dependencies:
     file-uri-to-path "1.0.0"
 
-biscuits-base@0.0.15:
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/biscuits-base/-/biscuits-base-0.0.15.tgz#e02dbfcaded9e55feda05e6ff44f7eb0bd936d1f"
-  integrity sha512-s/fTmYpcEqeuuGBlZ5RTqxaM0WimsmC5QyJ6Qfe6t2z0+gfNRUMwhUuyksQ5KcAz+FTnpBzoJP8VWIOlBh4ewQ==
+biscuits-base@0.0.17:
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/biscuits-base/-/biscuits-base-0.0.17.tgz#96a498d215fa3a7eb6b5cbc3094775ecca69c055"
+  integrity sha512-ZHo8tbbTuyCQ5XA+BcV32f5j18rQSFnInqxvL9FxKSyEWukko6eSCCmM5GZRo9u2Q8/zH2o3UZRAYUnpiFZhTw==
   dependencies:
     fs-extra "^9.0.1"
 
@@ -3639,6 +3639,11 @@ shell-quote@^1.6.1:
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/shell-quote/-/shell-quote-1.7.2.tgz#67a7d02c76c9da24f99d20808fcaded0e0e04be2"
   integrity sha512-mRz/m/JVscCrkMyPqHc/bczi3OQHkLTqXHEFu0zDhK/qfv3UcOA4SVmRCLmos4bhjr9ekVQubj/R7waKapmiQg==
+
+sinuous@^0.27.11:
+  version "0.27.11"
+  resolved "https://registry.yarnpkg.com/sinuous/-/sinuous-0.27.11.tgz#85f8f0b18607ca8e2205ccfda61f5dde34806643"
+  integrity sha512-2UzzlJfyhsCcpZOvh7uFzL4e/1EaFFy6d0FTaqJm1zImktl9WixAnNOwUpptnLKMA0jMKXEsD+3/HQpWuxz7mg==
 
 slash@^3.0.0:
   version "3.0.0"

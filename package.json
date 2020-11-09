@@ -1,6 +1,6 @@
 {
   "name": "assorted-biscuits",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Add annotations, hereafter unto for known as \"Biscuits\", to the end of the line of closing brackets (and more). These could be functions, if statements, etc. Make code soup digestible!",
   "repository": "https://github.com/code-biscuits/assorted-biscuits",
   "author": "CodeBiscuits",
@@ -29,7 +29,13 @@
   ],
   "main": "./bundled/extension.js",
   "contributes": {
-    "commands": [],
+    "commands": [
+      {
+        "command": "assorted-biscuits.configLanguage",
+        "title": "Configure Individual Language Settings",
+        "category": "Assorted Biscuits"
+      }
+    ],
     "configuration": {
       "title": "Assorted Biscuits",
       "properties": {
@@ -63,7 +69,7 @@
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",
-    "compile": "yarn run webpack && yarn run bundle",
+    "compile": "yarn run bundle",
     "bundle": "webpack --mode production",
     "lint": "eslint src --ext ts",
     "watch": "yarn run webpack",
@@ -94,7 +100,8 @@
   },
   "peerDependencies": {},
   "dependencies": {
-    "biscuits-base": "0.0.15",
+    "biscuits-base": "0.0.17",
+    "sinuous": "^0.27.11",
     "validate.js": "^0.13.1",
     "web-tree-sitter": "^0.17.1"
   },

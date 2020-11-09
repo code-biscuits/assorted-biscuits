@@ -1,4 +1,5 @@
-import vscode, { Position, Range, TextDocument as RawTextDocument } from "vscode";
+import vscode, { Position, Range, TextDocument as RawTextDocument, Uri } from "vscode";
+import path from "path";
 import { createActivate } from "biscuits-base";
 import * as validator from "validate.js";
 
@@ -130,27 +131,145 @@ export const activate = createActivate(
       text: string,
       activeEditor: vscode.TextEditor,
       prefix: string,
-      minDistance: number
+      minDistance: number,
+      context: vscode.ExtensionContext
     ) {
       try {
-      const innerTreeSitter = await treeSitter;
-      await extras;
 
-      return _createDecorations(
-        text,
-        activeEditor,
-        minDistance,
-        prefix,
-        innerTreeSitter
-      );
+        let configPanel: vscode.WebviewPanel | undefined = undefined;
 
-    } catch (error) {
-      console.log('error', error);
-      return [];
-    }
+        const commands = await vscode.commands.getCommands(true);
+        const commandName = 'assorted-biscuits.configLanguage';
+        if(commands.indexOf(commandName) === -1) {
+
+
+          context.subscriptions.push(
+            vscode.commands.registerCommand(commandName, () => {
+              configPanel = vscode.window.createWebviewPanel(
+                'assortedBiscuitsSettings',
+                'Assorted Biscuits Language Settings',
+                vscode.ViewColumn.One,
+                {
+                  enableScripts: true,
+                  localResourceRoots: [
+                    vscode.Uri.file(path.join(context.extensionPath, "bundled"))
+                  ],
+                  retainContextWhenHidden: true,
+                  enableCommandUris: true
+                }
+              );
+
+              configPanel.onDidDispose(() => {
+                configPanel = undefined;
+              });
+
+              const appPathOnDisk = vscode.Uri.file(
+                path.join(context.extensionPath, "bundled",  "configviewer.js")
+              );
+
+              const appUri = configPanel.webview.asWebviewUri(appPathOnDisk);
+
+              if(configPanel) {
+                configPanel.webview.html = _getWebviewContent(appUri);
+                configPanel.webview.postMessage({
+                  languages,
+                  languageSettings: vscode.workspace.getConfiguration().get(CONFIG_LANGUAGE_SETTINGS) || {},
+                  defaultSettings: {
+                    'annotationPrefix': vscode.workspace.getConfiguration().get(CONFIG_PREFIX_KEY),
+                    'annotationColor': vscode.workspace.getConfiguration().get(CONFIG_COLOR_KEY),
+                    'annotationMinDistance': vscode.workspace.getConfiguration().get(CONFIG_DISTANCE_KEY),
+                    'annotationMaxLength': vscode.workspace.getConfiguration().get(CONFIG_MAX_LENGTH),
+                  }
+                });
+
+                configPanel.webview.onDidReceiveMessage((message) => {
+                  console.log("MESSAGE RECEIVED", JSON.stringify(message));
+                  const workspaceConfiguration = vscode.workspace.getConfiguration();
+                  const currentLanguageSettings: any = workspaceConfiguration.get(CONFIG_LANGUAGE_SETTINGS);
+
+                  const language: string = Object.keys(message)[0];
+
+                  let newSettings: any = {};
+                  if(currentLanguageSettings) {
+                    newSettings = {
+                      ...currentLanguageSettings,
+                      [language]: {
+                        ...currentLanguageSettings[language],
+                        ...message[language]
+                      }
+                    };
+                  } else {
+                    newSettings = message;
+                  }
+                  workspaceConfiguration.update(CONFIG_LANGUAGE_SETTINGS, newSettings, true);
+
+                });
+
+              }
+            })
+          );
+
+        }
+
+        vscode.workspace.onDidChangeConfiguration((changeEvent) => {
+          if(configPanel) {
+            configPanel.webview.postMessage({
+              languages,
+              languageSettings: vscode.workspace.getConfiguration().get(CONFIG_LANGUAGE_SETTINGS) || {},
+              defaultSettings: {
+                'annotationPrefix': vscode.workspace.getConfiguration().get(CONFIG_PREFIX_KEY),
+                'annotationColor': vscode.workspace.getConfiguration().get(CONFIG_COLOR_KEY),
+                'annotationMinDistance': vscode.workspace.getConfiguration().get(CONFIG_DISTANCE_KEY),
+                'annotationMaxLength': vscode.workspace.getConfiguration().get(CONFIG_MAX_LENGTH),
+              }
+            });
+          }
+        });
+
+        const innerTreeSitter = await treeSitter;
+        await extras;
+
+        return _createDecorations(
+          text,
+          activeEditor,
+          minDistance,
+          prefix,
+          innerTreeSitter
+        );
+
+      } catch (error) {
+        console.log('error', error);
+        return [];
+      }
     },
   }
 );
+
+function _getWebviewContent(appUri: Uri) {
+
+  return `
+    <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta
+          http-equiv="Content-Security-Policy"
+          content="default-src 'none'; img-src https:; script-src vscode-webview-resource: 'unsafe-inline' https:; style-src vscode-webview-resource: 'unsafe-inline';"
+        >
+        <title>Assorted Biscuits Language Settings</title>
+        <script>
+          window.acquireVsCodeApi = acquireVsCodeApi;
+        </script>
+      </head>
+      <body>
+        <h1>Assorted Biscuits Language Settings</h1>
+        <div id="root"></div>
+        <script src="${appUri}">
+        </script>
+      </body>
+    </html>`;
+}
 
 function _createDecorations(
   text: string,
@@ -191,7 +310,7 @@ function _createDecorations(
     (settingsAreInvalid || namesAreInvalid || settingsNamesAreInvalid) &&
     !hasShownInvalidSettingsWarning &&
     currentSettingsString !== previousSettingsString
-    ) {
+  ) {
 
       let message = `Assorted Biscuits 🍪 Invalid Settings: `;
 
@@ -229,6 +348,8 @@ function _createDecorations(
   if (!TreeSitterLanguages[editorLanguage]) {
     return [];
   }
+
+  const languageSettings = currentSettings[editorLanguage];
 
   const macroStartRegex = /^\w*\#\[/gm;
   const scrubbedText = text.replace(macroStartRegex, '//');
@@ -270,12 +391,14 @@ function _createDecorations(
         contentText = '';
       }
 
-      let maxLength: number =
+      let maxLength: number = (languageSettings && languageSettings["annotationMaxLength"]) ||
         vscode.workspace.getConfiguration().get(CONFIG_MAX_LENGTH) || 0;
 
       // if(settingsAreInvalid[]) {
 
       // }
+
+      const newPrefix = (languageSettings && languageSettings["annotationPrefix"]) || prefix;
 
       if (maxLength && contentText.length > maxLength) {
         contentText = contentText.substr(0, maxLength) + "...";
@@ -285,7 +408,10 @@ function _createDecorations(
 
       contentText = contentText.trim();
 
-      if (endLine && endLine - startLine >= minDistance && contentText && startLine != endLine) {
+      const userMinDistance = (languageSettings && languageSettings["annotationMinDistance"]) ||
+      vscode.workspace.getConfiguration().get(CONFIG_DISTANCE_KEY) || 0;
+
+      if (endLine && endLine - startLine >= userMinDistance && contentText && startLine != endLine) {
 
         if(node?.previousSibling?.type === "member_access_expression") {
 
@@ -296,7 +422,7 @@ function _createDecorations(
             ),
             renderOptions: {
               after: {
-                contentText: `${prefix} ${contentText}`,
+                contentText: `${newPrefix} ${contentText}`,
               },
             },
           };
@@ -311,7 +437,7 @@ function _createDecorations(
             ),
             renderOptions: {
               after: {
-                contentText: `${prefix} ${contentText}`,
+                contentText: `${newPrefix} ${contentText}`,
               },
             },
           });
@@ -329,3 +455,18 @@ function _createDecorations(
 
   return decorations;
 }
+
+const configScript = `
+
+import { html } from 'sinuous';
+
+const HelloMessage = ({ name }) => html\`
+  <!-- Prints Hello World -->
+  <div>Hello \${name}</div>
+\`;
+
+document.querySelector('#root').append(
+  html\`<\${HelloMessage} name=World />\`
+);
+
+`
