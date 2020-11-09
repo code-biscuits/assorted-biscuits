@@ -4,6 +4,14 @@ All notable changes to the "csharp-biscuits" extension will be documented in thi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.0.12
+
+- Add language config instructions to README
+
+### 0.0.11
+
+- Add Language specific configuration UI
+
 ### 0.0.10
 
 - Finish validation for individual language settings

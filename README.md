@@ -39,7 +39,7 @@ In the current implementation, code-biscuits prevent seeing GitLens annotations.
 
 The HTML extension getting fixed will be the blueprint for fixing other extensions in the same way.
 
-## Configuration
+## Global Configuration
 
 - `assorted-biscuits.annotationColor` _string_ : Determines the color of annotation. Accepts any valid CSS color string.
 
@@ -56,19 +56,46 @@ The HTML extension getting fixed will be the blueprint for fixing other extensio
 - `assorted-biscuits.annotationMaxLength` _number_ : What is the longest annotation you should see before we cut it off with a `...`? A `0` value shows the full string.
   - default: `42`,
 
+- `assorted-biscuits.languageSettings` _object_: Per-language configuration to allow each language to feel unique. See "Language Specific Configuration" below.
+
+## Language Specific Configuration
+
+You can configure each setting above to be specific to each language. To do so, use `cmd + shift + p` to bring up the VSCode command pallette. Search for "Configure Individual Language Settings". Using the command will show a webview UI.
+
+![](assorted-config.gif)
+
+The settings above will take precedent over the global settings when using that specific language.
+
+You can also just use the settings.json to modify language settings:
+```
+
+  "assorted-biscuits.languageSettings": {
+    "rust": {
+      "annotationPrefix": "🦀 ",
+      "annotationMaxLength": "10",
+      "annotationMinDistance": "1",
+      "annotationColor": "#97f684"
+    },
+    "php": {
+      "annotationPrefix": "🐘 ",
+      "annotationColor": "#ff0000",
+      "annotationMaxLength": "4",
+      "annotationMinDistance": "1"
+    }
+  }
+```
+
+We do our best to validate your per-language configuration if you decide to edit it manually.
+
 ## Release Notes
 
-### 0.0.10
+### 0.0.12
 
-- Finish validation for individual language settings
+- Add language config instructions to README
 
-### 0.0.9
+### 0.0.11
 
-- Fix breaking bug in base
-
-### 0.0.8
-
-- Allow example gif pathing to work
+- Add Language specific configuration UI
 
 ## Attributions
 
