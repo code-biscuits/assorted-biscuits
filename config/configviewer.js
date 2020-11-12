@@ -212,7 +212,7 @@ const Config = () => html`
               <input
                 id="${language}-${prop.name}"
                 type="${prop.type}"
-                onchange=${(event) => {
+                oninput=${(event) => {
                   console.log("change", prop.name, event.target.value);
                   vscode.postMessage({
                     [language]: {
