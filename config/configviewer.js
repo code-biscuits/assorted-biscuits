@@ -142,8 +142,12 @@ const Styles = (props) => html`
       transform: rotate(90);
     }
 
-    .example-snippet {
+    .example-label {
       margin-left: 16px;
+      margin-right: 8px;
+    }
+
+    .example-snippet {
       background: rgba(0,0,0, 0.3);
       border-radius: 4px;
       padding: 4px 8px;
@@ -169,6 +173,7 @@ const Config = () => html`
         >
           <span class="accordion-caret">▶</span>
           <span class="language-name">${language}</span>
+          <span class="snippet-label">preview:</span>
           <span
             class="example-snippet"
             style="${() => {

@@ -89,13 +89,13 @@ We do our best to validate your per-language configuration if you decide to edit
 
 ## Release Notes
 
+### 0.0.13
+
+- Add more config UI and preview snippets
+
 ### 0.0.12
 
 - Add language config instructions to README
-
-### 0.0.11
-
-- Add Language specific configuration UI
 
 ## Attributions
 
