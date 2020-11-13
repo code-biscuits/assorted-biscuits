@@ -4,6 +4,10 @@ All notable changes to the "csharp-biscuits" extension will be documented in thi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.0.16
+
+- fix error: RuntimeError: abort(Error: Illegal value for `line`)
+
 ### 0.0.15
 
 - styling updates to per-language settings UI

@@ -89,6 +89,10 @@ We do our best to validate your per-language configuration if you decide to edit
 
 ## Release Notes
 
+### 0.0.16
+
+- fix error: RuntimeError: abort(Error: Illegal value for `line`)
+
 ### 0.0.15
 
 - styling updates to per-language settings UI

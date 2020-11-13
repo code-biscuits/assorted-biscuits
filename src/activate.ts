@@ -373,6 +373,11 @@ function _createDecorations(
       let startLine = node.startPosition.row;
       const endLine = node.endPosition.row;
 
+      if((!startLine && startLine !== 0) || (!endLine && endLine !== 0)) {
+        console.log('no startLine or endLine', startLine, endLine);
+        return;
+      }
+
       let contentText = "";
 
       contentText = activeEditor.document.lineAt(node.startPosition.row).text.trim();
@@ -410,7 +415,14 @@ function _createDecorations(
       const userMinDistance = (languageSettings && languageSettings["annotationMinDistance"]) ||
       vscode.workspace.getConfiguration().get(CONFIG_DISTANCE_KEY) || 0;
 
-      if (endLine && endLine - startLine >= userMinDistance && contentText && startLine != endLine) {
+      if (
+        (startLine || startLine === 0) &&
+        endLine &&
+        endLine - startLine >= userMinDistance &&
+        contentText &&
+        startLine != endLine &&
+        endOfLine
+      ) {
 
         if(node?.previousSibling?.type === "member_access_expression") {
 
