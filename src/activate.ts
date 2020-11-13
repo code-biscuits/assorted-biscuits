@@ -1,4 +1,5 @@
 import vscode, { Position, Range, TextDocument as RawTextDocument, Uri } from "vscode";
+import fs from "fs";
 import path from "path";
 import { createActivate } from "biscuits-base";
 import * as validator from "validate.js";
@@ -6,36 +7,28 @@ import * as validator from "validate.js";
 // @ts-ignore
 import TreeSitter = require("../deps/tree-sitter");
 
+const packageJson: any = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../package.json'), 'utf8'));
+
 const treeSitter = TreeSitter.init().then(() => {
   return new TreeSitter();
 });
 
-const languages = [
+// Failed WASM
   // "agda", // does it even make sense here
   // "bash", // failed
-  "csharp",
-  "c",
   // "cpp", //failed
   // "css",
-  "elm",
   // "embedded_template", //failed
-  "go",
   // "html", //failed 
-  "java",
   // "javascript", // ignored until we have typescript here
-  "json",
-  "lua",
-  "kotlin",
   // "markdown", //failed
-  "php",
-  "python",
   // "ruby", //failed
-  "rust",
   // "systemrdl", //failed
-  "toml",
   // "vue", //failed
-  "yaml",
-];
+
+const languages: string[] = packageJson.activationEvents.map((activationEvent: string)=> {
+  return activationEvent.split(':')[1];
+});
 
 const languageSettingsConstraints: any = {};
 
@@ -100,7 +93,7 @@ const TreeSitterLanguages: any = {};
 
 const extras = treeSitter.then(async (innerTreeSitter: any) => {
   return Promise.all(
-    languages.map((language) => {
+    languages.map((language: string) => {
       const grammarName = `tree-sitter-${language}`;
       const grammarWasm = `${grammarName}.wasm`;
 
@@ -142,7 +135,6 @@ export const activate = createActivate(
         const commandName = 'assorted-biscuits.configLanguage';
         if(commands.indexOf(commandName) === -1) {
 
-
           context.subscriptions.push(
             vscode.commands.registerCommand(commandName, () => {
               configPanel = vscode.window.createWebviewPanel(
@@ -155,7 +147,7 @@ export const activate = createActivate(
                     vscode.Uri.file(path.join(context.extensionPath, "bundled"))
                   ],
                   retainContextWhenHidden: true,
-                  enableCommandUris: true
+                  enableCommandUris: true,
                 }
               );
 
@@ -201,7 +193,6 @@ export const activate = createActivate(
                     newSettings = message;
                   }
                   workspaceConfiguration.update(CONFIG_LANGUAGE_SETTINGS, newSettings, true);
-
                 });
 
               }
@@ -397,10 +388,6 @@ function _createDecorations(
 
       let maxLength: number = (languageSettings && languageSettings["annotationMaxLength"]) ||
         vscode.workspace.getConfiguration().get(CONFIG_MAX_LENGTH) || 0;
-
-      // if(settingsAreInvalid[]) {
-
-      // }
 
       const newPrefix = (languageSettings && languageSettings["annotationPrefix"]) || prefix;
 

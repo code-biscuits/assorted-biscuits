@@ -89,6 +89,10 @@ We do our best to validate your per-language configuration if you decide to edit
 
 ## Release Notes
 
+### 0.0.17
+
+- scope extension to languages better using change events
+
 ### 0.0.16
 
 - fix error: RuntimeError: abort(Error: Illegal value for `line`)
