@@ -1,5 +1,6 @@
 import { o, html } from 'sinuous';
 import { map } from 'sinuous/map';
+import debounce from 'lodash/debounce';
 
 const languageSnippets = {
   // bash: '',
@@ -134,23 +135,29 @@ const Styles = (props) => html`
     }
 
     .accordion-caret {
+      display: inline-block;
       margin: 0 8px;
+      transform: rotate(0deg);
       transition: all 300ms;
     }
 
     .language.showing .accordion-caret {
-      transform: rotate(90);
+      transform: rotate(90deg);
     }
 
-    .example-label {
+    .snippet-wrapper {
+      background: rgba(0,0,0, 0.3);
+      border-radius: 4px;
       margin-left: 16px;
+      padding: 4px 8px;
+    }
+
+    .snippet-label {
+      font-size: 0.8rem;
       margin-right: 8px;
     }
 
-    .example-snippet {
-      background: rgba(0,0,0, 0.3);
-      border-radius: 4px;
-      padding: 4px 8px;
+    .snippet-example {
       font-size: 0.8rem;
       font-weight: 400;
     }
@@ -173,33 +180,35 @@ const Config = () => html`
         >
           <span class="accordion-caret">▶</span>
           <span class="language-name">${language}</span>
-          <span class="snippet-label">preview:</span>
-          <span
-            class="example-snippet"
-            style="${() => {
-              return {
-                color:  getLanguageSettingsValue(
+          <span class="snippet-wrapper">
+            <span class="snippet-label">preview:</span>
+            <span
+              class="snippet-example"
+              style="${() => {
+                return {
+                  color:  getLanguageSettingsValue(
+                    defaultSettings,
+                    languageSettings,
+                    language,
+                    'annotationColor'
+                  )
+                }
+              }}"
+            >${
+                () => getLanguageSettingsValue(
                   defaultSettings,
                   languageSettings,
                   language,
-                  'annotationColor'
+                  'annotationPrefix'
                 )
               }
-            }}"
-          >${
-              () => getLanguageSettingsValue(
+              ${() => truncateSnippet(
                 defaultSettings,
                 languageSettings,
                 language,
-                'annotationPrefix'
-              )
-            }
-            ${() => truncateSnippet(
-              defaultSettings,
-              languageSettings,
-              language,
-              getLanguageSnippet(language)
-            )}
+                getLanguageSnippet(language)
+              )}
+            </span>
           </span>
         </h3>
         <div
@@ -212,14 +221,19 @@ const Config = () => html`
               <input
                 id="${language}-${prop.name}"
                 type="${prop.type}"
-                oninput=${(event) => {
-                  console.log("change", prop.name, event.target.value);
-                  vscode.postMessage({
-                    [language]: {
-                      [prop.name]: event.target.value
+                oninput=${
+                  debounce((event) => {
+                    let value = event.target.value;
+                    if(prop.type === 'number') {
+                      value = Number(value);
                     }
-                  })
-                }}
+                    vscode.postMessage({
+                      [language]: {
+                        [prop.name]: value
+                      }
+                    })
+                  }, 100)
+                }
                 value="${() => (languageSettings()[language] && languageSettings()[language][prop.name]) || defaultSettings()[prop.name]}"
               />
             </span>

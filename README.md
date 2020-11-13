@@ -89,13 +89,15 @@ We do our best to validate your per-language configuration if you decide to edit
 
 ## Release Notes
 
-### 0.0.13
+### 0.0.15
 
-- Add more config UI and preview snippets
+- styling updates to per-language settings UI
+- debounce input events in settings UI
+- fixed per-language settings validation bugs
 
-### 0.0.12
+### 0.0.14
 
-- Add language config instructions to README
+- change settings UI change listener events to be more responsive
 
 ## Attributions
 

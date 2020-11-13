@@ -4,6 +4,16 @@ All notable changes to the "csharp-biscuits" extension will be documented in thi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.0.15
+
+- styling updates to per-language settings UI
+- debounce input events in settings UI
+- fixed per-language settings validation bugs
+
+### 0.0.14
+
+- change settings UI change listener events to be more responsive
+
 ### 0.0.13
 
 - Add more config UI and preview snippets

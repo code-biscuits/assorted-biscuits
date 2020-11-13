@@ -41,7 +41,6 @@ const extensionConfig = {
   plugins: [
     new CopyPlugin({
       patterns: [
-        // path.resolve(__dirname, "configViewer"),
         path.resolve(__dirname, "parsers/tree-sitter.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-agda.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-bash.wasm"),

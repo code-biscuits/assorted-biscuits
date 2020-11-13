@@ -1,6 +1,6 @@
 {
   "name": "assorted-biscuits",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "Add annotations, hereafter unto for known as \"Biscuits\", to the end of the line of closing brackets (and more). These could be functions, if statements, etc. Make code soup digestible!",
   "repository": "https://github.com/code-biscuits/assorted-biscuits",
   "author": "CodeBiscuits",
@@ -101,6 +101,7 @@
   "peerDependencies": {},
   "dependencies": {
     "biscuits-base": "0.0.17",
+    "lodash": "^4.17.20",
     "sinuous": "^0.27.11",
     "validate.js": "^0.13.1",
     "web-tree-sitter": "^0.17.1"

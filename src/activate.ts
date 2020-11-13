@@ -82,10 +82,10 @@ languages.forEach(language => {
       type: "string",
       inclusion: {
         within: [
-          `${language}.annotationPrefix`,
-          `${language}.annotationColor`,
-          `${language}.annotationMinDistance`,
-          `${language}.annotationMaxLength`,
+          `annotationPrefix`,
+          `annotationColor`,
+          `annotationMinDistance`,
+          `annotationMaxLength`,
         ],
         message: '^"%{value}" is not a supported property.'
       }
@@ -183,7 +183,6 @@ export const activate = createActivate(
                 });
 
                 configPanel.webview.onDidReceiveMessage((message) => {
-                  console.log("MESSAGE RECEIVED", JSON.stringify(message));
                   const workspaceConfiguration = vscode.workspace.getConfiguration();
                   const currentLanguageSettings: any = workspaceConfiguration.get(CONFIG_LANGUAGE_SETTINGS);
 
