@@ -26,9 +26,13 @@ const treeSitter = TreeSitter.init().then(() => {
   // "systemrdl", //failed
   // "vue", //failed
 
-const languages: string[] = packageJson.activationEvents.map((activationEvent: string)=> {
-  return activationEvent.split(':')[1];
-});
+const languages: string[] = packageJson.activationEvents.map((activationEvent: string) => {
+  if(activationEvent.indexOf('onLanguage') === 0) {
+    return activationEvent.split(':')[1];
+  } else  {
+    return null;
+  }
+}).filter((activationEvent: string) => !!activationEvent);
 
 const languageSettingsConstraints: any = {};
 
@@ -236,7 +240,6 @@ export const activate = createActivate(
 );
 
 function _getWebviewContent(appUri: Uri) {
-
   return `
     <!DOCTYPE html>
       <html lang="en">
@@ -377,12 +380,13 @@ function _createDecorations(
         contentText = node.text.replace(/(\r|\n|\r\n|\s)+/gm, " ");
       }
 
-      if(
-        node?.nextSibling?.type === ".") {
+      if(node && node.nextSibling &&
+        node.nextSibling.type === ".") {
         contentText = '';
       }
 
-      if(node?.nextSibling?.type === 'argument_list') {
+      if(node && node.nextSibling &&
+        node.nextSibling.type === 'argument_list') {
         contentText = '';
       }
 
@@ -411,7 +415,7 @@ function _createDecorations(
         endOfLine
       ) {
 
-        if(node?.previousSibling?.type === "member_access_expression") {
+        if(node && node.nextSibling && node.nextSibling.type === "member_access_expression") {
 
           biscuitsByFreshness[endLine] = {
             range: new vscode.Range(

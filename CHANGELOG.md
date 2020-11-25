@@ -4,6 +4,11 @@ All notable changes to the "csharp-biscuits" extension will be documented in thi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.0.18
+
+- filter activation events
+- remove optional chaining
+
 ### 0.0.17
 
 - scope extension to languages better using change events

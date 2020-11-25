@@ -89,6 +89,11 @@ We do our best to validate your per-language configuration if you decide to edit
 
 ## Release Notes
 
+### 0.0.18
+
+- filter activation events
+- remove optional chaining
+
 ### 0.0.17
 
 - scope extension to languages better using change events
@@ -96,16 +101,6 @@ We do our best to validate your per-language configuration if you decide to edit
 ### 0.0.16
 
 - fix error: RuntimeError: abort(Error: Illegal value for `line`)
-
-### 0.0.15
-
-- styling updates to per-language settings UI
-- debounce input events in settings UI
-- fixed per-language settings validation bugs
-
-### 0.0.14
-
-- change settings UI change listener events to be more responsive
 
 ## Attributions
 
