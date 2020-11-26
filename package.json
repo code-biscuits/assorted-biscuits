@@ -1,6 +1,6 @@
 {
   "name": "assorted-biscuits",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Add annotations, hereafter unto for known as \"Biscuits\", to the end of the line of closing brackets (and more). These could be functions, if statements, etc. Make code soup digestible!",
   "repository": "https://github.com/code-biscuits/assorted-biscuits",
   "author": "CodeBiscuits",

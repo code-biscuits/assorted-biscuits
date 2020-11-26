@@ -1,7 +1,7 @@
 import vscode, { Position, Range, TextDocument as RawTextDocument, Uri } from "vscode";
 import fs from "fs";
 import path from "path";
-import { createActivate } from "biscuits-base";
+import { createActivate } from "./create-activate";
 import * as validator from "validate.js";
 
 // @ts-ignore
@@ -129,7 +129,8 @@ export const activate = createActivate(
       activeEditor: vscode.TextEditor,
       prefix: string,
       minDistance: number,
-      context: vscode.ExtensionContext
+      context: vscode.ExtensionContext,
+      document: vscode.TextDocument
     ) {
       try {
 
@@ -223,13 +224,22 @@ export const activate = createActivate(
         const innerTreeSitter = await treeSitter;
         await extras;
 
-        return _createDecorations(
-          text,
-          activeEditor,
-          minDistance,
-          prefix,
-          innerTreeSitter
-        );
+        const editorLanguage = document.languageId;
+
+        if (!TreeSitterLanguages[editorLanguage]) {
+          return [];
+        } else {
+          return _createDecorations(
+            text,
+            activeEditor,
+            minDistance,
+            prefix,
+            innerTreeSitter,
+            document
+          );
+        }
+
+        return [];
 
       } catch (error) {
         console.log('error', error);
@@ -270,9 +280,11 @@ function _createDecorations(
   minDistance: number,
   prefix: string,
   innerTreeSitter: any,
+  document: vscode.TextDocument,
 ) {
-  const editorLanguage = activeEditor.document.languageId;
 
+  const editorLanguage = document.languageId;
+  console.log("EDITOR Language", editorLanguage);
   const currentSettings: any = vscode.workspace.getConfiguration().get(CONFIG_LANGUAGE_SETTINGS) || {};
   const settingsAreInvalid = validator.validate(currentSettings, languageSettingsConstraints);
   const currentSettingsString = JSON.stringify(currentSettings);
@@ -338,10 +350,6 @@ function _createDecorations(
 
   previousSettingsString = currentSettingsString;
 
-  if (!TreeSitterLanguages[editorLanguage]) {
-    return [];
-  }
-
   const languageSettings = currentSettings[editorLanguage];
 
   const macroStartRegex = /^\w*\#\[/gm;
@@ -349,6 +357,7 @@ function _createDecorations(
 
   innerTreeSitter.setLanguage(TreeSitterLanguages[editorLanguage]);
   const parsedText = (innerTreeSitter as TreeSitter).parse(scrubbedText);
+  // const parsedText ={ rootNode: {children: [] as any}};
 
   let decorations: any[] = [];
 
@@ -380,8 +389,7 @@ function _createDecorations(
         contentText = node.text.replace(/(\r|\n|\r\n|\s)+/gm, " ");
       }
 
-      if(node && node.nextSibling &&
-        node.nextSibling.type === ".") {
+      if(node?.nextSibling?.type === ".") {
         contentText = '';
       }
 
