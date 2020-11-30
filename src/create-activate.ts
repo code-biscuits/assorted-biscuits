@@ -7,7 +7,7 @@ export interface ServiceWrapper {
     prefix: string,
     minDistance: number,
     context?: vscode.ExtensionContext,
-    document?: vscode.TextDocument,
+    document?: vscode.TextDocument
   ): Promise<any[]>;
 }
 
@@ -56,7 +56,6 @@ export function createActivate(
         .getConfiguration()
         .get("assorted-biscuits.languageSettings");
 
-
       const newLanguageColor =
         (languageSettings && languageSettings["annotationColor"]) || color;
 
@@ -88,7 +87,7 @@ export function createActivate(
           prefix,
           minDistance,
           context,
-          document,
+          document
         );
       }
 
@@ -104,7 +103,6 @@ export function createActivate(
     vscode.window.onDidChangeActiveTextEditor(
       (editor) => {
         activeEditor = editor;
-        console.log("EVENT: onDidChangeActiveTextEditor", editor?.document);
         if (editor) {
           updateDecorations(editor.document);
         }
@@ -115,10 +113,7 @@ export function createActivate(
 
     vscode.workspace.onDidChangeTextDocument(
       (event) => {
-        console.log("EVENT: onDidChangeTextDocument", event);
-        if(event.document.languageId === 'rust') {
-          updateDecorations(event.document);
-        }
+        updateDecorations(event.document);
       },
       null,
       context.subscriptions

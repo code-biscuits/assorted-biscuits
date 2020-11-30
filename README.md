@@ -54,6 +54,7 @@ The HTML extension getting fixed will be the blueprint for fixing other extensio
   - default: `0`,
 
 - `assorted-biscuits.annotationMaxLength` _number_ : What is the longest annotation you should see before we cut it off with a `...`? A `0` value shows the full string.
+
   - default: `42`,
 
 - `assorted-biscuits.languageSettings` _object_: Per-language configuration to allow each language to feel unique. See "Language Specific Configuration" below.
@@ -67,6 +68,7 @@ You can configure each setting above to be specific to each language. To do so, 
 The settings above will take precedent over the global settings when using that specific language.
 
 You can also just use the settings.json to modify language settings:
+
 ```
 
   "assorted-biscuits.languageSettings": {
@@ -88,6 +90,14 @@ You can also just use the settings.json to modify language settings:
 We do our best to validate your per-language configuration if you decide to edit it manually.
 
 ## Release Notes
+
+## 0.0.20
+
+- fix update handling for most languages
+
+### 0.0.19
+
+- swallow TreeSitter errors
 
 ### 0.0.18
 

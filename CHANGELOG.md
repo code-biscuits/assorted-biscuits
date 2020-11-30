@@ -4,6 +4,14 @@ All notable changes to the "csharp-biscuits" extension will be documented in thi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 0.0.20
+
+- fix update handling for most languages
+
+### 0.0.19
+
+- swallow TreeSitter errors
+
 ### 0.0.18
 
 - filter activation events
