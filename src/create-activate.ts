@@ -93,7 +93,9 @@ export function createActivate(
 
       // activeEditor?.setDecorations(decorationType, []);
 
-      activeEditor?.setDecorations(decorationType, decorations);
+      if (decorations.length > 0) {
+        activeEditor?.setDecorations(decorationType, decorations);
+      }
     }
 
     if (activeEditor) {
