@@ -4,7 +4,11 @@ All notable changes to the "csharp-biscuits" extension will be documented in thi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## 0.0.20
+### 0.0.21
+
+- fix setDecorations not invoked if decorations array is empty
+
+### 0.0.20
 
 - fix update handling for most languages
 

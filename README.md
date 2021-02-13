@@ -91,26 +91,17 @@ We do our best to validate your per-language configuration if you decide to edit
 
 ## Release Notes
 
-## 0.0.20
+### 0.0.21
+
+- fix setDecorations not invoked if decorations array is empty
+
+### 0.0.20
 
 - fix update handling for most languages
 
 ### 0.0.19
 
 - swallow TreeSitter errors
-
-### 0.0.18
-
-- filter activation events
-- remove optional chaining
-
-### 0.0.17
-
-- scope extension to languages better using change events
-
-### 0.0.16
-
-- fix error: RuntimeError: abort(Error: Illegal value for `line`)
 
 ## Attributions
 
