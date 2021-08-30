@@ -42,7 +42,7 @@ const extensionConfig = {
     new CopyPlugin({
       patterns: [
         path.resolve(__dirname, "parsers/tree-sitter.wasm"),
-        path.resolve(__dirname, "parsers/tree-sitter-agda.wasm"),
+        // path.resolve(__dirname, "parsers/tree-sitter-agda.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-bash.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-c.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-csharp.wasm"),
@@ -51,7 +51,7 @@ const extensionConfig = {
         path.resolve(__dirname, "parsers/tree-sitter-elm.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-embedded_template.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-go.wasm"),
-        path.resolve(__dirname, "parsers/tree-sitter-haiku.wasm"),
+        // path.resolve(__dirname, "parsers/tree-sitter-haiku.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-html.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-java.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-javascript.wasm"),
@@ -65,6 +65,8 @@ const extensionConfig = {
         path.resolve(__dirname, "parsers/tree-sitter-rust.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-systemrdl.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-toml.wasm"),
+        path.resolve(__dirname, "parsers/tree-sitter-tsx.wasm"),
+        path.resolve(__dirname, "parsers/tree-sitter-typescript.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-vue.wasm"),
         path.resolve(__dirname, "parsers/tree-sitter-yaml.wasm"),
       ],
@@ -92,12 +94,8 @@ const configConfig = {
     extensions: [".js"],
   },
   module: {
-    rules: [
-    ],
+    rules: [],
   },
 };
 
-module.exports = [
-  extensionConfig,
-  configConfig
-];
+module.exports = [extensionConfig, configConfig];

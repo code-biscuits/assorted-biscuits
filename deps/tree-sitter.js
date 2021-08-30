@@ -2289,7 +2289,7 @@ var Module = void 0 !== Module ? Module : {};
             console.log("loading error:", error);
             return n;
           }
-          console.log("language", JSON.stringify(n));
+          console.log("languageadsfasdf", JSON.stringify(n));
           return new Language(Ke, n);
         });
     }

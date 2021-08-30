@@ -8,6 +8,7 @@ import fs from "fs";
 import path from "path";
 import { createActivate } from "./create-activate";
 import * as validator from "validate.js";
+import { filterBiscuit } from "./filters/index";
 
 // @ts-ignore
 import TreeSitter = require("../deps/tree-sitter");
@@ -106,14 +107,18 @@ const TreeSitterLanguages: any = {};
 const extras = treeSitter.then(async (innerTreeSitter: any) => {
   return Promise.all(
     languages.map((language: string) => {
+      console.log("language in extras", language);
       const grammarName = `tree-sitter-${language}`;
       const grammarWasm = `${grammarName}.wasm`;
 
-      return TreeSitter.Language.load(grammarWasm).then(
-        (treeSitterLanguage: any) => {
+      return TreeSitter.Language.load(grammarWasm)
+        .then((treeSitterLanguage: any) => {
           TreeSitterLanguages[language] = treeSitterLanguage;
-        }
-      );
+        })
+        .catch((e: any) => {
+          console.log("language in catch", language);
+          return e;
+        });
     })
   );
 });
@@ -199,10 +204,10 @@ export const activate = createActivate(
                 });
 
                 configPanel.webview.onDidReceiveMessage((message) => {
-                  const workspaceConfiguration = vscode.workspace.getConfiguration();
-                  const currentLanguageSettings: any = workspaceConfiguration.get(
-                    CONFIG_LANGUAGE_SETTINGS
-                  );
+                  const workspaceConfiguration =
+                    vscode.workspace.getConfiguration();
+                  const currentLanguageSettings: any =
+                    workspaceConfiguration.get(CONFIG_LANGUAGE_SETTINGS);
 
                   const language: string = Object.keys(message)[0];
 
@@ -455,6 +460,15 @@ function _createDecorations(
       if (maxLength && contentText.length > maxLength) {
         contentText = contentText.substr(0, maxLength) + "...";
       }
+
+      ///
+      contentText = filterBiscuit(
+        activeEditor,
+        editorLanguage,
+        contentText.trim(),
+        node,
+        parsedText
+      );
 
       const endOfLine = activeEditor.document.lineAt(endLine).range.end;
 
