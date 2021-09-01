@@ -1,46 +1,52 @@
-import { o, html } from 'sinuous';
-import { map } from 'sinuous/map';
-import debounce from 'lodash/debounce';
+import { o, html } from "sinuous";
+import { map } from "sinuous/map";
+import debounce from "lodash/debounce";
 
 const languageSnippets = {
   // bash: '',
-  c: 'if(channel->reqX11_state == libssh2_NB_state_sent) {',
-  csharp: 'return new CompositeDisposable(',
-  elm: '[ WebGL.entity vertexShader fragmentShader faceMesh',
-  go: 'if controllerRefChanged && oldControllerRef != nil',
-  java: 'public static void main (String[] args) throws java.io.IOException',
+  c: "if(channel->reqX11_state == libssh2_NB_state_sent) {",
+  csharp: "return new CompositeDisposable(",
+  elm: "[ WebGL.entity vertexShader fragmentShader faceMesh",
+  go: "if controllerRefChanged && oldControllerRef != nil",
+  java: "public static void main (String[] args) throws java.io.IOException",
   json: '"json-biscuits.annotationMaxLength": {',
-  kotlin: 'internal class HttpTransactionDatabaseRepository(private val database: ChuckerDatabase) ',
-  lua: 'function source.simplify(src)',
+  kotlin:
+    "internal class HttpTransactionDatabaseRepository(private val database: ChuckerDatabase) ",
+  lua: "function source.simplify(src)",
   php: 'if (empty($options["type"])) {',
-  python: 'def check_pydep(importname, module):',
-  rust: 'fn on_drain<I, S, E>(conn: Pin<&mut UpgradeableConnection<I, S, E>>)',
-  toml: 'features = [',
-  yaml: '- task: DotNetCoreCLI@2'
+  python: "def check_pydep(importname, module):",
+  rust: "fn on_drain<I, S, E>(conn: Pin<&mut UpgradeableConnection<I, S, E>>)",
+  toml: "features = [",
+  yaml: "- task: DotNetCoreCLI@2",
 };
 
 const vscode = acquireVsCodeApi();
 
 const props = [
   {
-    name: 'annotationPrefix',
-    type: 'text',
-    label: 'Prefix',
+    name: "annotationPrefix",
+    type: "text",
+    label: "Prefix",
   },
   {
-    name:'annotationColor' ,
-    type: 'color',
-    label: 'Color',
+    name: "annotationColor",
+    type: "color",
+    label: "Color",
   },
   {
-    name:'annotationMinDistance',
-    type: 'number',
-    label: 'Distance',
+    name: "annotationMinDistance",
+    type: "number",
+    label: "Distance",
   },
   {
-    name:'annotationMaxLength',
-    type: 'number',
-    label: 'Length',
+    name: "annotationMaxLength",
+    type: "number",
+    label: "Length",
+  },
+  {
+    name: "annotationCursorLineOnly",
+    type: "checkbox",
+    label: "Cursor Line Only",
   },
 ];
 
@@ -51,11 +57,10 @@ const defaultSettings = o({});
 const showingLanguage = {};
 
 window.addEventListener("message", (config) => {
-  config.data.languages.forEach(language => {
-    if(!showingLanguage[language]) {
+  config.data.languages.forEach((language) => {
+    if (!showingLanguage[language]) {
       showingLanguage[language] = o(false);
     } else {
-
     }
   });
   languages(config.data.languages);
@@ -146,7 +151,7 @@ const Styles = (props) => html`
     }
 
     .snippet-wrapper {
-      background: rgba(0,0,0, 0.3);
+      background: rgba(0, 0, 0, 0.3);
       border-radius: 4px;
       margin-left: 16px;
       padding: 4px 8px;
@@ -161,86 +166,105 @@ const Styles = (props) => html`
       font-size: 0.8rem;
       font-weight: 400;
     }
-
   </style>
 `;
 
 const Config = () => html`
   <${Styles} />
   <div>
-    ${map(languages, (language => html`
-      <div class="language ${() => {
-        return showingLanguage[language]() ? 'showing' : ''
-      }}">
-        <h3
-          class="language-header"
-          onclick=${() => {
-            showingLanguage[language](!showingLanguage[language]());
-          }}
+    ${map(
+      languages,
+      (language) => html`
+        <div
+          class="language ${() => {
+            return showingLanguage[language]() ? "showing" : "";
+          }}"
         >
-          <span class="accordion-caret">▶</span>
-          <span class="language-name">${language}</span>
-          <span class="snippet-wrapper">
-            <span class="snippet-label">preview:</span>
-            <span
-              class="snippet-example"
-              style="${() => {
-                return {
-                  color:  getLanguageSettingsValue(
+          <h3
+            class="language-header"
+            onclick=${() => {
+              showingLanguage[language](!showingLanguage[language]());
+            }}
+          >
+            <span class="accordion-caret">▶</span>
+            <span class="language-name">${language}</span>
+            <span class="snippet-wrapper">
+              <span class="snippet-label">preview:</span>
+              <span
+                class="snippet-example"
+                style="${() => {
+                  return {
+                    color: getLanguageSettingsValue(
+                      defaultSettings,
+                      languageSettings,
+                      language,
+                      "annotationColor"
+                    ),
+                  };
+                }}"
+                >${() =>
+                  getLanguageSettingsValue(
                     defaultSettings,
                     languageSettings,
                     language,
-                    'annotationColor'
-                  )
-                }
-              }}"
-            >${
-                () => getLanguageSettingsValue(
-                  defaultSettings,
-                  languageSettings,
-                  language,
-                  'annotationPrefix'
-                )
-              }
-              ${() => truncateSnippet(
-                defaultSettings,
-                languageSettings,
-                language,
-                getLanguageSnippet(language)
-              )}
+                    "annotationPrefix"
+                  )}
+                ${() =>
+                  truncateSnippet(
+                    defaultSettings,
+                    languageSettings,
+                    language,
+                    getLanguageSnippet(language)
+                  )}
+              </span>
             </span>
-          </span>
-        </h3>
-        <div
-          class="language-fields"
-          style=${() => { return { 'display': !showingLanguage[language]() ? 'none' : 'flex' }}}
-        >
-          ${props.map(prop => html`
-            <span class="cell">
-              <label htmlFor="${language}-${prop.name}">${prop.label}</label>
-              <input
-                id="${language}-${prop.name}"
-                type="${prop.type}"
-                oninput=${
-                  debounce((event) => {
-                    let value = event.target.value;
-                    if(prop.type === 'number') {
-                      value = Number(value);
+          </h3>
+          <div
+            class="language-fields"
+            style=${() => {
+              return {
+                display: !showingLanguage[language]() ? "none" : "flex",
+              };
+            }}
+          >
+            ${props.map(
+              (prop) => html`
+                <span class="cell">
+                  <label htmlFor="${language}-${prop.name}"
+                    >${prop.label}</label
+                  >
+                  ${() => {
+                    if (prop.type === "boolean") {
+                      return html``;
+                    } else {
+                      return html`<input
+                        id="${language}-${prop.name}"
+                        type="${prop.type}"
+                        oninput=${debounce((event) => {
+                          let value = event.target.value;
+                          if (prop.type === "number") {
+                            value = Number(value);
+                          }
+                          vscode.postMessage({
+                            [language]: {
+                              [prop.name]: value,
+                            },
+                          });
+                        }, 100)}
+                        value="${() =>
+                          (languageSettings()[language] &&
+                            languageSettings()[language][prop.name]) ||
+                          defaultSettings()[prop.name]}"
+                      />`;
                     }
-                    vscode.postMessage({
-                      [language]: {
-                        [prop.name]: value
-                      }
-                    })
-                  }, 100)
-                }
-                value="${() => (languageSettings()[language] && languageSettings()[language][prop.name]) || defaultSettings()[prop.name]}"
-              />
-            </span>
-          `)}
+                  }}
+                </span>
+              `
+            )}
           </div>
-      </div>
-    `))}
+        </div>
+      `
+    )}
   </div>
 `;
 
@@ -249,7 +273,12 @@ function getLanguageSnippet(language) {
 }
 
 function truncateSnippet(defaultSettings, languageSettings, language, snippet) {
-  const maxLength = getLanguageSettingsValue(defaultSettings, languageSettings, language, 'annotationMaxLength');
+  const maxLength = getLanguageSettingsValue(
+    defaultSettings,
+    languageSettings,
+    language,
+    "annotationMaxLength"
+  );
 
   if (maxLength && snippet.length > maxLength) {
     return snippet.substr(0, maxLength) + "...";
@@ -258,13 +287,16 @@ function truncateSnippet(defaultSettings, languageSettings, language, snippet) {
   }
 }
 
-function getLanguageSettingsValue(defaultSettings, languageSettings, language, propName) {
+function getLanguageSettingsValue(
+  defaultSettings,
+  languageSettings,
+  language,
+  propName
+) {
   return (
-    languageSettings()[language] &&
-    languageSettings()[language][propName]
-  ) || defaultSettings()[propName];
+    (languageSettings()[language] && languageSettings()[language][propName]) ||
+    defaultSettings()[propName]
+  );
 }
 
-document.querySelector('#root').append(
-  html`<${Config} />`
-);
+document.querySelector("#root").append(html`<${Config} />`);

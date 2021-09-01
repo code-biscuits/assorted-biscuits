@@ -2281,15 +2281,15 @@ var Module = void 0 !== Module ? Module : {};
                 2
               )}`
             );
-          console.log("parsed module", JSON.stringify(Object.keys(e)));
+          // console.log("parsed module", JSON.stringify(Object.keys(e)));
           let n = e[r];
           try {
             n = n();
           } catch (error) {
-            console.log("loading error:", error);
+            // console.log("loading error:", error);
             return n;
           }
-          console.log("language", JSON.stringify(n));
+          // console.log("language", JSON.stringify(n));
           return new Language(Ke, n);
         });
     }

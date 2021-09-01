@@ -59,6 +59,17 @@ The HTML extension getting fixed will be the blueprint for fixing other extensio
 
 - `assorted-biscuits.languageSettings` _object_: Per-language configuration to allow each language to feel unique. See "Language Specific Configuration" below.
 
+- `assorted-biscuits.annotationCursorLineOnly` _boolean_ : Determines whether to show the biscuits on all lines or only the current cursor line. (Supports multi cursor editing)
+  - default: `false`,
+
+## Commands
+
+As we add more commands to change functionality on the fly, we will document them here.
+
+### Toggle Biscuits
+
+You are now able to toggle the biscuits on and off using the VSCode Command `Assorted Biscuits: Toggle Biscuits Showing`.
+
 ## Language Specific Configuration
 
 You can configure each setting above to be specific to each language. To do so, use `cmd + shift + p` to bring up the VSCode command pallette. Search for "Configure Individual Language Settings". Using the command will show a webview UI.

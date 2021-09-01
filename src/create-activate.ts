@@ -6,17 +6,24 @@ export interface ServiceWrapper {
     activeEditor: vscode.TextEditor,
     prefix: string,
     minDistance: number,
+    shouldHideBiscuits: boolean,
+    cursorLineOnly: boolean,
+    cursorLines: number[],
     context?: vscode.ExtensionContext,
     document?: vscode.TextDocument
   ): Promise<any[]>;
 }
 
 let decorationType: vscode.TextEditorDecorationType;
+const toggleCommand = "assorted-biscuits.toggleBiscuitsShowing";
+let shouldHideBiscuits = false;
+let cursorLines: number[] = [];
 
 export function createActivate(
   CONFIG_COLOR_KEY: string,
   CONFIG_DISTANCE_KEY: string,
   CONFIG_PREFIX_KEY: string,
+  CONFIG_CURSOR_LINE_ONLY: string,
   service: ServiceWrapper
 ) {
   return function (context: vscode.ExtensionContext) {
@@ -34,8 +41,6 @@ export function createActivate(
     let editorLanguage = activeEditor?.document.languageId || "";
     let languageSettings = currentSettings[editorLanguage];
 
-    console.log("LANGUAGE in createActivate: ", editorLanguage);
-
     if (decorationType) {
       decorationType.dispose();
     }
@@ -49,8 +54,23 @@ export function createActivate(
       rangeBehavior: vscode.DecorationRangeBehavior.ClosedOpen,
     });
 
+    context.subscriptions.push(
+      vscode.commands.registerCommand(toggleCommand, () => {
+        shouldHideBiscuits = !shouldHideBiscuits;
+        let currentActiveEditor = vscode.window.activeTextEditor;
+        if (currentActiveEditor) {
+          updateDecorations(currentActiveEditor.document);
+        }
+      })
+    );
+
     async function updateDecorations(document: vscode.TextDocument) {
       decorations = [];
+
+      if (shouldHideBiscuits) {
+        activeEditor?.setDecorations(decorationType, []);
+        return;
+      }
 
       currentSettings = vscode.workspace
         .getConfiguration()
@@ -65,6 +85,9 @@ export function createActivate(
         vscode.workspace.getConfiguration().get(CONFIG_PREFIX_KEY) || "// ";
       const minDistance: number =
         vscode.workspace.getConfiguration().get(CONFIG_DISTANCE_KEY) || 0;
+      const cursorLineOnly: boolean =
+        vscode.workspace.getConfiguration().get(CONFIG_CURSOR_LINE_ONLY) ||
+        false;
 
       if (color !== newLanguageColor) {
         decorationType.dispose();
@@ -86,6 +109,9 @@ export function createActivate(
           activeEditor,
           prefix,
           minDistance,
+          shouldHideBiscuits,
+          cursorLineOnly,
+          cursorLines,
           context,
           document
         );
@@ -95,6 +121,8 @@ export function createActivate(
 
       if (decorations.length > 0) {
         activeEditor?.setDecorations(decorationType, decorations);
+      } else {
+        activeEditor?.setDecorations(decorationType, []);
       }
     }
 
@@ -112,6 +140,15 @@ export function createActivate(
       null,
       context.subscriptions
     );
+
+    vscode.window.onDidChangeTextEditorSelection((cursorLocationEvent) => {
+      cursorLines = cursorLocationEvent.selections.map(
+        (cursorLocation) => cursorLocation.end?.line ?? 0
+      );
+      if (activeEditor) {
+        updateDecorations(activeEditor.document);
+      }
+    });
 
     vscode.workspace.onDidChangeTextDocument(
       (event) => {

@@ -1,6 +1,6 @@
 {
   "name": "assorted-biscuits",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "Add annotations, hereafter unto for known as \"Biscuits\", to the end of the line of closing brackets (and more). These could be functions, if statements, etc. Make code soup digestible!",
   "repository": "https://github.com/code-biscuits/assorted-biscuits",
   "author": "CodeBiscuits",
@@ -47,6 +47,11 @@
         "command": "assorted-biscuits.configLanguage",
         "title": "Configure Individual Language Settings",
         "category": "Assorted Biscuits"
+      },
+      {
+        "command": "assorted-biscuits.toggleBiscuitsShowing",
+        "title": "Toggle Biscuits Showing",
+        "category": "Assorted Biscuits"
       }
     ],
     "configuration": {
@@ -76,6 +81,11 @@
           "type": "object",
           "default": {},
           "decription": "Configure prefixes, distances, and more per language."
+        },
+        "assorted-biscuits.annotationCursorLineOnly": {
+          "type": "boolean",
+          "default": false,
+          "description": "Only show the biscuit on the line that your cursor occupies."
         }
       }
     }

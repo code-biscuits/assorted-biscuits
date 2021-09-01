@@ -91,6 +91,7 @@ languages.forEach((language) => {
           `annotationColor`,
           `annotationMinDistance`,
           `annotationMaxLength`,
+          `annotationCursorLineOnly`,
         ],
         message: '^"%{value}" is not a supported property.',
       },
@@ -124,6 +125,7 @@ const CONFIG_COLOR_KEY = "assorted-biscuits.annotationColor";
 const CONFIG_DISTANCE_KEY = "assorted-biscuits.annotationMinDistance";
 const CONFIG_MAX_LENGTH = "assorted-biscuits.annotationMaxLength";
 const CONFIG_LANGUAGE_SETTINGS = "assorted-biscuits.languageSettings";
+const CONFIG_CURSOR_LINE_ONLY = "assorted-biscuits.annotationCursorLineOnly";
 
 let runningActivation: Promise<any>;
 
@@ -131,12 +133,16 @@ export const activate = createActivate(
   CONFIG_COLOR_KEY,
   CONFIG_DISTANCE_KEY,
   CONFIG_PREFIX_KEY,
+  CONFIG_CURSOR_LINE_ONLY,
   {
     async createDecorations(
       text: string,
       activeEditor: vscode.TextEditor,
       prefix: string,
       minDistance: number,
+      shouldHideBiscuits: boolean,
+      cursorLineOnly: boolean,
+      cursorLines: number[],
       context: vscode.ExtensionContext,
       document: vscode.TextDocument
     ) {
@@ -199,10 +205,10 @@ export const activate = createActivate(
                 });
 
                 configPanel.webview.onDidReceiveMessage((message) => {
-                  const workspaceConfiguration = vscode.workspace.getConfiguration();
-                  const currentLanguageSettings: any = workspaceConfiguration.get(
-                    CONFIG_LANGUAGE_SETTINGS
-                  );
+                  const workspaceConfiguration =
+                    vscode.workspace.getConfiguration();
+                  const currentLanguageSettings: any =
+                    workspaceConfiguration.get(CONFIG_LANGUAGE_SETTINGS);
 
                   const language: string = Object.keys(message)[0];
 
@@ -269,7 +275,10 @@ export const activate = createActivate(
             minDistance,
             prefix,
             innerTreeSitter,
-            document
+            document,
+            shouldHideBiscuits,
+            cursorLineOnly,
+            cursorLines
           );
         }
 
@@ -313,10 +322,12 @@ function _createDecorations(
   minDistance: number,
   prefix: string,
   innerTreeSitter: any,
-  document: vscode.TextDocument
+  document: vscode.TextDocument,
+  shouldHideBiscuits: boolean,
+  cursorLineOnly: boolean,
+  cursorLines: number[]
 ) {
   const editorLanguage = document.languageId;
-  console.log("EDITOR Language", editorLanguage);
   const currentSettings: any =
     vscode.workspace.getConfiguration().get(CONFIG_LANGUAGE_SETTINGS) || {};
   const settingsAreInvalid = validator.validate(
@@ -444,6 +455,15 @@ function _createDecorations(
         contentText = "";
       }
 
+      cursorLineOnly =
+        (languageSettings && languageSettings["annotationCursorLineOnly"]) ||
+        cursorLineOnly ||
+        false;
+
+      if (cursorLineOnly && cursorLines.indexOf(endLine) === -1) {
+        contentText = "";
+      }
+
       let maxLength: number =
         (languageSettings && languageSettings["annotationMaxLength"]) ||
         vscode.workspace.getConfiguration().get(CONFIG_MAX_LENGTH) ||
@@ -470,7 +490,7 @@ function _createDecorations(
         endLine &&
         endLine - startLine >= userMinDistance &&
         contentText &&
-        startLine != endLine &&
+        startLine !== endLine &&
         endOfLine
       ) {
         if (
